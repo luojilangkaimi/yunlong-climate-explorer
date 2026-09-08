@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>云龙天池流域气候变化 · 交互系统</title>
+<style>
+  @font-face {
+    font-family: "WorkSans";
+    src: url("./climate-explorer/_shared/fonts/WorkSans-Regular.ttf") format("truetype");
+    font-weight: 400;
+  }
+  @font-face {
+    font-family: "WorkSans";
+    src: url("./climate-explorer/_shared/fonts/WorkSans-Bold.ttf") format("truetype");
+    font-weight: 700;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "WorkSans", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(160deg, #0b1f3a 0%, #14345e 55%, #1d4a7a 100%);
+    color: #eaf1fa;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 20px;
+  }
+  .wrap { max-width: 860px; width: 100%; text-align: center; }
+  .kicker {
+    font-size: 13px; letter-spacing: 3px; text-transform: uppercase;
+    color: #8fc1ff; margin-bottom: 14px; font-weight: 700;
+  }
+  h1 {
+    font-size: 34px; font-weight: 700; line-height: 1.35; margin-bottom: 14px;
+  }
+  .sub { font-size: 15px; color: #b9cce4; line-height: 1.8; margin-bottom: 38px; }
+  .cards { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; }
+  .card {
+    flex: 1 1 300px; max-width: 380px; text-align: left;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 14px; padding: 24px 26px;
+    transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    text-decoration: none; color: inherit; display: block;
+  }
+  .card:hover { transform: translateY(-4px); border-color: #6aa9ff; background: rgba(255,255,255,0.11); }
+  .card h2 { font-size: 19px; font-weight: 700; margin-bottom: 8px; }
+  .card .en { font-size: 12px; color: #8fc1ff; letter-spacing: 1px; margin-bottom: 10px; font-weight: 700; }
+  .card p { font-size: 13.5px; color: #c4d5ea; line-height: 1.7; }
+  .foot { margin-top: 36px; font-size: 12px; color: #7e96b5; line-height: 1.8; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">Yunlong Tianchi Watershed · CMIP6</div>
+  <h1>云龙天池流域气候变化 · 交互系统</h1>
+  <div class="sub">基于 CMIP6 双模式集合（MPI-ESM1-2-HR · MRI-ESM2-0）、EQM 偏差校正与 30m 地形细化<br>聚焦云南云龙天池流域（约 7 km²，海拔 2557–3223 m）的气候变化预估</div>
+  <div class="cards">
+    <a class="card" href="./climate-explorer/climate-explorer.html">
+      <div class="en">Interactive Explorer</div>
+      <h2>交互探索器</h2>
+      <p>时间滑块地图（2020–2090 逐年演化）、双情景联动曲线、模式间不确定范围、流域统计面板。</p>
+    </a>
+    <a class="card" href="./climate-atlas/climate-atlas.html">
+      <div class="en">Result Atlas</div>
+      <h2>结果图册</h2>
+      <p>均值、变化、趋势与极端指数图件全集，含流域尺度 30m 精细化制图与流域边界标注。</p>
+    </a>
+  </div>
+  <div class="foot">数据：CHELSA 气候态（1981–2010）· CMIP6 SSP2-4.5 / SSP5-8.5 · 云龙站 WMO 56742 独立验证（待补充）</div>
+</div>
+</body>
+</html>
