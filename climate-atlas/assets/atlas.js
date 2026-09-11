@@ -1,7 +1,7 @@
 (function () {
-  var state = { dom: "all", var: "all", scen: "all", win: "all", type: "all" };
+  var state = { var: "all", scen: "all", win: "all", type: "all" };
   var allCards = Array.prototype.slice.call(document.querySelectorAll(".fig-card"));
-  // 筛选与计数只针对图册区的 72 张结果图；阅读指引区的附图（流域划定检查图）不参与筛选
+  // 筛选与计数只针对图册区的 36 张结果图；阅读指引区的附图（流域划定检查图）不参与筛选
   var cards = allCards.filter(function (c) { return !!c.closest("#gallery"); });
   var groups = Array.prototype.slice.call(document.querySelectorAll(".group"));
   var countEl = document.getElementById("fcount");
@@ -9,8 +9,7 @@
   function applyFilter() {
     var visible = 0;
     cards.forEach(function (card) {
-      var ok = (state.dom === "all" || card.dataset.dom === state.dom) &&
-               (state.var === "all" || card.dataset.var === state.var) &&
+      var ok = (state.var === "all" || card.dataset.var === state.var) &&
                (state.scen === "all" || card.dataset.scen === state.scen) &&
                (state.win === "all" || card.dataset.win === state.win) &&
                (state.type === "all" || card.dataset.type === state.type);

@@ -218,12 +218,6 @@ footer a { color: var(--accent); }
       <button data-m="abs">绝对值</button>
     </div>
   </div>
-  <div class="ctrl-group"><label>视野</label>
-    <div class="seg" id="seg-view">
-      <button data-view="ws" class="on">流域</button>
-      <button data-view="region">区域</button>
-    </div>
-  </div>
 </section>
 
 <section class="timeline card">
@@ -253,7 +247,7 @@ footer a { color: var(--accent); }
         <span class="lg"><i class="lg-ws"></i>流域边界</span>
         <span class="lg"><i class="lg-lake"></i>天池湖面</span>
         <span class="lg"><i class="lg-star">★</i>湖心</span>
-        <span class="lg" style="color:#9aa5b1">底图：山体阴影</span>
+        <span class="lg" style="color:#9aa5b1">底图：山体阴影（仅流域内显示）</span>
       </div>
       <div class="cbar-block">
         <span id="cbar-lo"></span>
@@ -281,7 +275,7 @@ footer a { color: var(--accent); }
       <div class="cmp-row c585"><span class="nm">SSP5-8.5</span><span id="cmp-585">+3.5 °C</span></div>
     </div>
     <div class="st-note" id="st-note">
-      统计为流域 30m 地形细化口径（气温含高程递减率 γΔz 修正，降水双线性）；地图为 1km 集合中位数场。箭头键微调年份，空格播放。
+      统计为流域 30m 地形细化口径（气温含高程递减率 γΔz 修正，降水双线性）；地图为 1km 集合中位数场，仅显示云龙天池流域范围。箭头键微调年份，空格播放。
     </div>
   </aside>
 </section>
@@ -305,7 +299,7 @@ footer a { color: var(--accent); }
     <div>
       <p><b>滑动窗口</b>：滑块年 Y 对应 [Y−9, Y+10] 的 20 年平均，如 2050 → 2041–2060（与主结果的分析窗口对齐）。</p>
       <p><b>已知限制</b>：集合仅两个模式，不确定性表达有限；年降水集合场年际变差偏小，逐月极端指标请以图册日值口径为准。</p>
-      <p><b>边界数据</b>：流域由 30m GLO-30 DEM 填洼–D8 汇流自动划定（约 7.0 km²），湖盆取流域内最大洼地。</p>
+      <p><b>边界数据</b>：流域由 30m GLO-30 DEM 填洼–D8 汇流自动划定（约 7.0 km²），湖盆取流域内最大洼地；地图与图层均裁剪至流域边界内，流域外不显示。</p>
     </div>
   </div>
 </section>
@@ -338,7 +332,7 @@ const SCEN_NAME = { ssp245: "SSP2-4.5", ssp585: "SSP5-8.5" };
 const SCEN_FULL = { ssp245: "SSP2-4.5 中等排放", ssp585: "SSP5-8.5 高排放" };
 const SCEN_COLOR = { ssp245: "#2563eb", ssp585: "#dc2626" };
 
-const state = { v: "tas", s: "ssp245", mode: "delta", year: 2050, view: "ws" };
+const state = { v: "tas", s: "ssp245", mode: "delta", year: 2050 };
 
 /* base64 → Uint8Array（带缓存） */
 const u8Cache = new Map();
@@ -442,18 +436,14 @@ canvas.width = CSS_W * DPR; canvas.height = CSS_H * DPR;
 let VIEW = null, TF = null;   // 当前视野范围与坐标变换
 
 function computeView() {
-  if (state.view === "region") {
-    VIEW = { x0: EXT.x0, x1: EXT.x1, y0: EXT.y0, y1: EXT.y1 };
-  } else {
-    let x0 = 1e9, x1 = -1e9, y0 = -1e9, y1 = 1e9;
-    for (const ring of M.wsRings)
-      for (const p of ring) {
-        if (p[0] < x0) x0 = p[0]; if (p[0] > x1) x1 = p[0];
-        if (p[1] > y0) y0 = p[1]; if (p[1] < y1) y1 = p[1];
-      }
-    const pad = 0.045;
-    VIEW = { x0: x0 - pad, x1: x1 + pad, y0: y0 + pad, y1: y1 - pad };
-  }
+  let x0 = 1e9, x1 = -1e9, y0 = -1e9, y1 = 1e9;
+  for (const ring of M.wsRings)
+    for (const p of ring) {
+      if (p[0] < x0) x0 = p[0]; if (p[0] > x1) x1 = p[0];
+      if (p[1] > y0) y0 = p[1]; if (p[1] < y1) y1 = p[1];
+    }
+  const pad = 0.008;
+  VIEW = { x0: x0 - pad, x1: x1 + pad, y0: y0 + pad, y1: y1 - pad };
 }
 function computeTF() {
   const pad = 16;
@@ -466,6 +456,29 @@ function computeTF() {
     toPx(lon, lat) { return [ox + (lon - VIEW.x0) * s, oy + (VIEW.y0 - lat) * s]; },
     toLL(px, py) { return [VIEW.x0 + (px - ox) / s, VIEW.y0 - (py - oy) / s]; }
   };
+}
+
+function wsClipPath() {
+  const path = new Path2D();
+  for (const ring of M.wsRings) {
+    ring.forEach((p, i) => {
+      const q = TF.toPx(p[0], p[1]);
+      i === 0 ? path.moveTo(q[0], q[1]) : path.lineTo(q[0], q[1]);
+    });
+    path.closePath();
+  }
+  ctx.clip(path);
+}
+
+function inWatershed(lon, lat) {
+  const ring = M.wsRings[0];
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const xi = ring[i][0], yi = ring[i][1], xj = ring[j][0], yj = ring[j][1];
+    if ((yi > lat) !== (yj > lat) &&
+        lon < (xj - xi) * (lat - yi) / (yj - yi) + xi) inside = !inside;
+  }
+  return inside;
 }
 
 function drawStar(x, y, r) {
@@ -507,10 +520,13 @@ function drawMap() {
   const dw = TF.s * (VIEW.x1 - VIEW.x0), dh = TF.s * (VIEW.y0 - VIEW.y1);
 
   ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
+  ctx.save();
+  wsClipPath();   // 山体阴影与数据场均裁剪至云龙天池流域多边形
   ctx.drawImage(hillCanvas, sx, sy, sw, sh, TF.ox, TF.oy, dw, dh);
   ctx.globalAlpha = 0.88;
   ctx.drawImage(mid, sx * 4, sy * 4, sw * 4, sh * 4, TF.ox, TF.oy, dw, dh);
   ctx.globalAlpha = 1;
+  ctx.restore();
 
   // 湖面描边（不填充，避免色场误读）
   ctx.lineWidth = 1.6; ctx.strokeStyle = "#2980b9";
@@ -596,6 +612,12 @@ canvas.addEventListener("mousemove", (e) => {
   const px = (e.clientX - r.left) * (CSS_W / r.width);
   const py = (e.clientY - r.top) * (CSS_H / r.height);
   const [lon, lat] = TF.toLL(px, py);
+  if (!inWatershed(lon, lat)) {
+    tip.style.display = "none";
+    canvas.style.cursor = "default";
+    return;
+  }
+  canvas.style.cursor = "crosshair";
   const key = state.v + "|" + state.s + "|" + state.mode;
   const rng = RG[key];
   const i = Math.round((lon - LON[0]) / STEP), j = Math.round((LAT[0] - lat) / STEP);
@@ -868,7 +890,6 @@ function bindSeg(id, attr, fn) {
 bindSeg("seg-var", "v", (v) => { state.v = v; refreshAll(true); });
 bindSeg("seg-scen", "s", (s) => { state.s = s; refreshAll(false); });
 bindSeg("seg-mode", "m", (m) => { state.mode = m; refreshAll(true); });
-bindSeg("seg-view", "view", (vw) => { state.view = vw; drawMap(); });
 
 function refreshAll(rebuildChart) {
   drawMap(); updateColorbar(); updateStats(); updateTitles();

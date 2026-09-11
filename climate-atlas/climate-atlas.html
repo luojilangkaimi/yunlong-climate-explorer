@@ -337,7 +337,7 @@ sup a:hover { text-decoration: underline; }
   <div class="wrap">
     <div class="kicker">CMIP6 · EQM 偏差校正 · LSTM 统计降尺度</div>
     <h1>云龙天池流域气候变化预测 · 结果图册</h1>
-    <p class="sub">基于 CMIP6 双全球模式（MPI-ESM1-2-HR 与 MRI-ESM2-0），经 EQM 偏差校正与 1km LSTM 统计降尺度，对 SSP245 / SSP585 两种排放情景下的气温与降水进行未来预测。结果图册共 72 张图，分<strong>「流域 30m」与「全域 1km」</strong>两套口径：前者以 GLO-30 原生分辨率聚焦云龙天池流域（6.98 km²），后者提供区域整体背景。全部图件按范围、变量、情景、时间窗与指标类型五个维度筛选浏览。</p>
+    <p class="sub">基于 CMIP6 双全球模式（MPI-ESM1-2-HR 与 MRI-ESM2-0），经 EQM 偏差校正与 1km LSTM 统计降尺度，对 SSP245 / SSP585 两种排放情景下的气温与降水进行未来预测。结果图册共 36 张图，全部为<strong>「流域 30m」</strong>口径：以 GLO-30 原生分辨率聚焦云龙天池流域（6.98 km²），图件内容严格裁剪至流域边界内，流域外不显示。全部图件按变量、情景、时间窗与指标类型四个维度筛选浏览。</p>
     <div class="chips">
       <span class="chip">2 个 GCM 模式</span>
       <span class="chip">2 种情景（SSP245 / SSP585）</span>
@@ -354,24 +354,24 @@ sup a:hover { text-decoration: underline; }
 <!-- ============ 核心结论 ============ -->
 <section id="summary">
   <h2 class="sec-title">核心结论速览</h2>
-  <p class="sec-lede">以下数字均为<strong>双模式集合中位数</strong>口径，相对 1981–2010 观测基准期（CHELSA）的变化量。</p>
+  <p class="sec-lede">以下数字均为<strong>云龙天池流域（30m 地形细化）双模式集合中位数</strong>口径，相对 1981–2010 观测基准期（CHELSA）的变化量。</p>
 
   <div class="stat-grid">
     <div class="stat warm">
-      <div class="num">+4.18<small> K</small></div>
-      <div class="lab">SSP585 末期（2081–2100）升温<br>模式间：MPI +3.90 / MRI +4.46</div>
+      <div class="num">+4.32<small> K</small></div>
+      <div class="lab">SSP585 末期（2081–2100）流域升温<br>模式间：+4.04 ~ +4.59 K</div>
     </div>
     <div class="stat warm">
-      <div class="num">+2.14<small> K</small></div>
-      <div class="lab">SSP245 末期升温<br>中排放路径下仍持续变暖</div>
+      <div class="num">+2.22<small> K</small></div>
+      <div class="lab">SSP245 末期流域升温<br>中排放路径下仍持续变暖</div>
     </div>
     <div class="stat">
-      <div class="num">+5.7<small> %</small></div>
-      <div class="lab">SSP585 末期降水总量变化<br>强降水占比却下降 10–15 个百分点</div>
+      <div class="num">+6.0<small> %</small></div>
+      <div class="lab">SSP585 末期流域降水总量变化<br>模式间 −6% ~ +18%，符号相反</div>
     </div>
     <div class="stat">
       <div class="num">100<small> %</small></div>
-      <div class="lab">SSP585 两窗口 MK 显著增温格点<br>（α = 0.05，逐格点检验）</div>
+      <div class="lab">SSP585 两窗口 MK 显著增温格点<br>（流域内逐格点检验，α = 0.05）</div>
     </div>
   </div>
 
@@ -382,12 +382,12 @@ sup a:hover { text-decoration: underline; }
   <div class="chart-row">
     <figure class="chart-figure">
       <figcaption>气温变化：集合中位数（K）</figcaption>
-      <div class="chart-sub">未来窗口相对 1981–2010 基准期的年均温变化 · 全域 1km 与流域 30m 两种口径</div>
+      <div class="chart-sub">未来窗口相对 1981–2010 基准期的流域年均温变化 · 双模式集合中位数</div>
       <div id="chart-tas"></div>
     </figure>
     <figure class="chart-figure">
       <figcaption>降水变化：集合中位数（%）</figcaption>
-      <div class="chart-sub">未来窗口相对基准期的降水总量变化 · 全域 1km 与流域 30m 两种口径（蓝=增湿，棕=变干）</div>
+      <div class="chart-sub">未来窗口相对基准期的流域降水总量变化 · 双模式集合中位数（蓝=增湿，棕=变干）</div>
       <div id="chart-pr"></div>
     </figure>
   </div>
@@ -399,15 +399,14 @@ sup a:hover { text-decoration: underline; }
   <div class="guide-grid">
     <div class="guide-card">
       <h4>图册组织与命名规则</h4>
-      <p>全部图件由<strong>范围 × 变量 × 情景 × 窗口 × 指标类型</strong>五个维度组织，命名规则为 <code>变量_情景_窗口_类型.png</code>（全域 1km 版）与 <code>变量_情景_窗口_类型_ws.png</code>（流域 30m 版），例如 <code>tas_ssp585_2081-2100_change_ws.png</code> 表示"气温 · SSP585 · 2081–2100 窗口 · 流域 30m 空间变化图"。上方工具栏可按五个维度筛选浏览；点击任意图可放大查看，支持左右键翻页。流域版不含时间序列图（ts），但新增现状—未来绝对场对比图（mean）。</p>
+      <p>全部图件由<strong>变量 × 情景 × 窗口 × 指标类型</strong>四个维度组织，命名规则为 <code>变量_情景_窗口_类型_ws.png</code>，例如 <code>tas_ssp585_2081-2100_change_ws.png</code> 表示"气温 · SSP585 · 2081–2100 窗口 · 流域 30m 空间变化图"。上方工具栏可按四个维度筛选浏览；点击任意图可放大查看，支持左右键翻页。图册含现状—未来绝对场对比图（mean）；逐年演化曲线请使用<strong>交互探索器</strong>的时间序列功能。</p>
     </div>
     <div class="guide-card">
       <h4>六类图的定义</h4>
       <ul>
-        <li><strong>绝对场对比（mean，仅流域版）</strong>：现状 1981–2010 与未来窗口的绝对值双联图（气温 °C / 降水 mm·年⁻¹），共享色标，山体阴影提供地形语境。</li>
+        <li><strong>绝对场对比（mean）</strong>：现状 1981–2010 与未来窗口的绝对值双联图（气温 °C / 降水 mm·年⁻¹），共享色标，山体阴影提供地形语境。</li>
         <li><strong>空间变化（change）</strong>：格点级变化量填色图（气温 K / 降水 %），取集合中位数。</li>
-        <li><strong>时间序列（ts，仅全域版）</strong>：区域平均月值曲线，黑线为集合中位数，灰色阴影为模式间 min–max 范围。</li>
-        <li><strong>MK 趋势（trend）</strong>：窗口内 Sen 斜率填色，灰色区域标注 p ≥ 0.05 的不显著格点（流域版）/ 黑点标注显著格点（全域版）。</li>
+        <li><strong>MK 趋势（trend）</strong>：窗口内 Sen 斜率填色，灰色区域标注 p ≥ 0.05 的不显著格点。</li>
         <li><strong>极端暖/冷月（txx / tnn）</strong>：最暖月 / 最冷月相对基准期同期距平（K）。</li>
         <li><strong>强降水占比（r95p）</strong>：超过基准期同月 95 分位的降水占年总量比例的变化（百分点）。</li>
       </ul>
@@ -423,11 +422,11 @@ sup a:hover { text-decoration: underline; }
     </div>
     <div class="guide-card">
       <h4>流域边界标识</h4>
-      <p>全部空间图均叠加<strong>黑色边界线 = 云龙天池流域范围</strong>，白色五角星 = 天池湖心。流域由 30m Copernicus DEM 经 D8 汇流分析自动划定：<strong>面积 6.98 km²（8111 个 30m 格点，格点面积已按纬度做经度收缩校正），高程 2557–3223 m</strong>；湖盆以地形洼地自动识别，其填充体积 9.69 Mm³、面积 1.32 km²、湖面高程 2565 m，与文献值（1089.7 万 m³ / 1.28 km² / 2558 m）相符。划定方法详见下方检查图。</p>
+      <p>全部图件（含山体阴影底图与数据场）均<strong>裁剪至云龙天池流域多边形内</strong>，流域外不显示任何内容；黑色边界线即流域范围，白色五角星 = 天池湖心。流域由 30m Copernicus DEM 经 D8 汇流分析自动划定：<strong>面积 6.98 km²（8111 个 30m 格点，格点面积已按纬度做经度收缩校正），高程 2557–3223 m</strong>；湖盆以地形洼地自动识别，其填充体积 9.69 Mm³、面积 1.32 km²、湖面高程 2565 m，与文献值（1089.7 万 m³ / 1.28 km² / 2558 m）相符。划定方法详见下方检查图。</p>
     </div>
     <div class="guide-card">
       <h4>流域 30m 地形细化是怎么做的</h4>
-      <p>1km LSTM 降尺度结果在流域内仅覆盖约 7 个格点，不足以刻画 6.98 km² 的小流域。因此将气候场细化到 GLO-30 原生 30m 网格（流域外扩约 1.3 km，约 4.4 万格点）：<strong>气温</strong>采用局部高程递减率法——在 1km 网格上逐月回归气温—高程关系得递减率 γ（约 −0.4 ~ −0.6 K/100m），按 30m 与 1km DEM 的高程差 Δz 修正（T₃₀ = T₁ₖ + γΔz）；<strong>降水</strong>采用双线性插值。信息增量体现在<strong>绝对场</strong>（mean 图）紧贴山脊—山谷的地形结构上；ΔT/ΔP 等变化场中 γΔz 项在历史/未来间相互抵消，空间形态与 1km 版一致，数值口径无差别。</p>
+      <p>1km LSTM 降尺度结果在流域内仅覆盖约 7 个格点，不足以刻画 6.98 km² 的小流域。因此将气候场细化到 GLO-30 原生 30m 网格（计算网格为流域外扩约 1.3 km 的范围，图件仅显示流域边界内）：<strong>气温</strong>采用局部高程递减率法——在 1km 网格上逐月回归气温—高程关系得递减率 γ（约 −0.4 ~ −0.6 K/100m），按 30m 与 1km DEM 的高程差 Δz 修正（T₃₀ = T₁ₖ + γΔz）；<strong>降水</strong>采用双线性插值。信息增量体现在<strong>绝对场</strong>（mean 图）紧贴山脊—山谷的地形结构上；ΔT/ΔP 等变化场中 γΔz 项在历史/未来间相互抵消，空间形态与 1km 版一致，数值口径无差别。</p>
     </div>
     <div class="guide-card">
       <h4>结果是怎么算出来的</h4>
@@ -440,23 +439,17 @@ sup a:hover { text-decoration: underline; }
     <figcaption class="fig-cap">
       <div class="fig-head"><span class="fig-no">附图</span><span class="fig-type">流域划定</span></div>
       <h4>云龙天池流域划定检查图（30m DEM · D8 汇流分析）</h4>
-      <p>灰度山体阴影底图上，红色边界为自动划定的云龙天池流域（6.98 km²），蓝色为天池湖面，▲ 为流域出口（湖水外泄方向），★ 为湖心。流域范围即图册所有空间图中黑色边界线所标示的区域，也是全部「流域 30m」图件的统计范围。</p>
+      <p>灰度山体阴影底图上，红色边界为自动划定的云龙天池流域（6.98 km²），蓝色为天池湖面，▲ 为流域出口（湖水外泄方向），★ 为湖心。流域范围即图册所有图件的显示与统计范围（全部图件均裁剪至该边界内）。</p>
     </figcaption>
   </figure>
 </section>
 
 <!-- ============ 图册 ============ -->
 <section id="gallery">
-  <h2 class="sec-title">结果图册（72 图）</h2>
+  <h2 class="sec-title">结果图册（36 图）</h2>
 
   <div class="toolbar">
     <div class="wrap toolbar-inner">
-      <div class="fgroup" data-dim="dom">
-        <span class="flab">范围</span>
-        <button class="fbtn active" data-dim="dom" data-val="all">全部</button>
-        <button class="fbtn" data-dim="dom" data-val="ws">流域 30m</button>
-        <button class="fbtn" data-dim="dom" data-val="regional">全域 1km</button>
-      </div>
       <div class="fgroup" data-dim="var">
         <span class="flab">变量</span>
         <button class="fbtn active" data-dim="var" data-val="all">全部</button>
@@ -480,7 +473,6 @@ sup a:hover { text-decoration: underline; }
         <button class="fbtn active" data-dim="type" data-val="all">全部</button>
         <button class="fbtn" data-dim="type" data-val="mean">绝对场</button>
         <button class="fbtn" data-dim="type" data-val="change">空间变化</button>
-        <button class="fbtn" data-dim="type" data-val="ts">时间序列</button>
         <button class="fbtn" data-dim="type" data-val="trend">MK 趋势</button>
         <button class="fbtn" data-dim="type" data-val="extreme">极端指标</button>
       </div>
@@ -508,7 +500,7 @@ sup a:hover { text-decoration: underline; }
         <figcaption class="fig-cap">
           <div class="fig-head"><span class="fig-no">图 02</span><span class="fig-type">空间变化</span></div>
           <h4>流域年均温变化 ΔT（K）· SSP245 · 2041–2060</h4>
-          <p>流域平均 <strong>+1.43 K</strong>，略高于全域口径（+1.36 K，图 37）——流域平均海拔较高，升温幅度随海拔略增。变化场内空间差异不足 0.1 K，说明该窗口升温的地形调制弱，主要受大尺度强迫控制。</p>
+          <p>流域平均 <strong>+1.43 K</strong>——流域平均海拔较高，升温幅度随海拔略增。变化场内空间差异不足 0.1 K，说明该窗口升温的地形调制弱，主要受大尺度强迫控制。</p>
         </figcaption>
       </figure>
       <figure class="fig-card" data-dom="ws" data-var="tas" data-scen="ssp245" data-win="mid" data-type="trend">
@@ -516,7 +508,7 @@ sup a:hover { text-decoration: underline; }
         <figcaption class="fig-cap">
           <div class="fig-head"><span class="fig-no">图 03</span><span class="fig-type">MK 趋势</span></div>
           <h4>流域 MK 趋势检验（Sen 斜率）· SSP245 · 2041–2060</h4>
-          <p>流域内 <strong>95.6% 格点</strong>通过显著性检验（灰色为不显著区），平均 Sen 斜率 +0.02 K/年。与全域版（图 39，98.9%）基本一致：升温趋势在流域尺度同样统计稳健。</p>
+          <p>流域内 <strong>95.6% 格点</strong>通过显著性检验（灰色为不显著区），平均 Sen 斜率 +0.02 K/年——升温趋势在流域尺度同样统计稳健。</p>
         </figcaption>
       </figure>
       <figure class="fig-card" data-dom="ws" data-var="tas" data-scen="ssp245" data-win="mid" data-type="extreme">
@@ -566,7 +558,7 @@ sup a:hover { text-decoration: underline; }
         <figcaption class="fig-cap">
           <div class="fig-head"><span class="fig-no">图 08</span><span class="fig-type">MK 趋势</span></div>
           <h4>流域 MK 趋势检验（Sen 斜率）· SSP245 · 2081–2100</h4>
-          <p><strong>0% 格点显著</strong>——SSP245 路径在 2080 年后温度趋稳，窗口内以自然变率为主（全域版图 44 同样为 0%）。读图时应区分"窗口内趋势不显著"与"相对基准期已显著增暖 +2.22 K"两个层面。</p>
+          <p><strong>0% 格点显著</strong>——SSP245 路径在 2080 年后温度趋稳，窗口内以自然变率为主。读图时应区分"窗口内趋势不显著"与"相对基准期已显著增暖 +2.22 K"两个层面。</p>
         </figcaption>
       </figure>
       <figure class="fig-card" data-dom="ws" data-var="tas" data-scen="ssp245" data-win="late" data-type="extreme">
@@ -608,7 +600,7 @@ sup a:hover { text-decoration: underline; }
         <figcaption class="fig-cap">
           <div class="fig-head"><span class="fig-no">图 12</span><span class="fig-type">空间变化</span></div>
           <h4>流域年均温变化 ΔT（K）· SSP585 · 2041–2060</h4>
-          <p>流域平均 <strong>+1.98 K</strong>，与同期 SSP245（+1.43 K）相差约 0.5 K——与全域口径（图 47 vs 图 37）的分岔时序一致：中叶两路径尚未明显分离，差距在下半叶拉开。</p>
+          <p>流域平均 <strong>+1.98 K</strong>，与同期 SSP245（+1.43 K）相差约 0.5 K：中叶两路径尚未明显分离，差距在下半叶拉开。</p>
         </figcaption>
       </figure>
       <figure class="fig-card" data-dom="ws" data-var="tas" data-scen="ssp585" data-win="mid" data-type="trend">
@@ -658,7 +650,7 @@ sup a:hover { text-decoration: underline; }
         <figcaption class="fig-cap">
           <div class="fig-head"><span class="fig-no">图 17</span><span class="fig-type">空间变化</span></div>
           <h4>流域年均温变化 ΔT（K）· SSP585 · 2081–2100</h4>
-          <p>流域平均 <strong>+4.32 K</strong>（全域 +4.18 K，图 52）。流域内变化幅度约 4.2–4.5 K，山脊略高于河谷——升温的垂直分异在本窗口开始显现，对湖泊补给与高海拔生态是叠加压力。</p>
+          <p>流域平均 <strong>+4.32 K</strong>。流域内变化幅度约 4.2–4.5 K，山脊略高于河谷——升温的垂直分异在本窗口开始显现，对湖泊补给与高海拔生态是叠加压力。</p>
         </figcaption>
       </figure>
       <figure class="fig-card" data-dom="ws" data-var="tas" data-scen="ssp585" data-win="late" data-type="trend">
@@ -666,7 +658,7 @@ sup a:hover { text-decoration: underline; }
         <figcaption class="fig-cap">
           <div class="fig-head"><span class="fig-no">图 18</span><span class="fig-type">MK 趋势</span></div>
           <h4>流域 MK 趋势检验（Sen 斜率）· SSP585 · 2081–2100</h4>
-          <p><strong>100% 格点显著</strong>，平均 Sen 斜率 +0.037 K/年（全域版图 54 同为 100%）。高排放路径下升温在末期窗口内仍保持强趋势，尚无"趋稳"迹象。</p>
+          <p><strong>100% 格点显著</strong>，平均 Sen 斜率 +0.037 K/年。高排放路径下升温在末期窗口内仍保持强趋势，尚无"趋稳"迹象。</p>
         </figcaption>
       </figure>
       <figure class="fig-card" data-dom="ws" data-var="tas" data-scen="ssp585" data-win="late" data-type="extreme">
@@ -708,7 +700,7 @@ sup a:hover { text-decoration: underline; }
         <figcaption class="fig-cap">
           <div class="fig-head"><span class="fig-no">图 22</span><span class="fig-type">空间变化</span></div>
           <h4>流域降水变化率 ΔP（%）· SSP245 · 2041–2060</h4>
-          <p>流域平均 <strong>+1.87%</strong>（全域 +1.5%，图 57）。弱信号期格点级正负交错，读图以流域整体为准——中期降水变化在统计上尚不成立（见趋势图 23）。</p>
+          <p>流域平均 <strong>+1.87%</strong>。弱信号期格点级正负交错，读图以流域整体为准——中期降水变化在统计上尚不成立（见趋势图 23）。</p>
         </figcaption>
       </figure>
       <figure class="fig-card" data-dom="ws" data-var="pr" data-scen="ssp245" data-win="mid" data-type="trend">
@@ -716,7 +708,7 @@ sup a:hover { text-decoration: underline; }
         <figcaption class="fig-cap">
           <div class="fig-head"><span class="fig-no">图 23</span><span class="fig-type">MK 趋势</span></div>
           <h4>流域 MK 趋势检验（Sen 斜率）· SSP245 · 2041–2060</h4>
-          <p><strong>0% 格点显著</strong>（全域版图 59 为 15.8%）。降水信号弱、年际噪声大，中期趋势不可检测；与气温同窗口的 95.6%（图 03）对照，凸显两类变量信号—噪声比的量级差异。</p>
+          <p><strong>0% 格点显著</strong>。降水信号弱、年际噪声大，中期趋势不可检测；与气温同窗口的 95.6%（图 03）对照，凸显两类变量信号—噪声比的量级差异。</p>
         </figcaption>
       </figure>
       <figure class="fig-card" data-dom="ws" data-var="pr" data-scen="ssp245" data-win="mid" data-type="extreme">
@@ -724,7 +716,7 @@ sup a:hover { text-decoration: underline; }
         <figcaption class="fig-cap">
           <div class="fig-head"><span class="fig-no">图 24</span><span class="fig-type">极端指标</span></div>
           <h4>流域强降水占比变化 R95p（百分点）· SSP245 · 2041–2060</h4>
-          <p>全域一致的 <strong>−14.2 个百分点</strong>。请注意：这是数据口径限制造成的均匀负值（未来期年际变差坍缩，几乎无月份超过基准期同月 95 分位），<strong>不是真实的强降水减少信号</strong>，详见阅读指引的统计口径说明。</p>
+          <p>全流域一致的 <strong>−14.2 个百分点</strong>。请注意：这是数据口径限制造成的均匀负值（未来期年际变差坍缩，几乎无月份超过基准期同月 95 分位），<strong>不是真实的强降水减少信号</strong>，详见阅读指引的统计口径说明。</p>
         </figcaption>
       </figure>
     </div>
@@ -750,7 +742,7 @@ sup a:hover { text-decoration: underline; }
         <figcaption class="fig-cap">
           <div class="fig-head"><span class="fig-no">图 26</span><span class="fig-type">空间变化</span></div>
           <h4>流域降水变化率 ΔP（%）· SSP245 · 2081–2100</h4>
-          <p>流域平均 <strong>+3.39%</strong>（全域 +2.6%，图 61），较中期（+1.87%）继续偏湿。SSP245 下降水"温和增加"的判断在流域口径下成立，与西南季风区增暖背景下的水汽增加预期一致。</p>
+          <p>流域平均 <strong>+3.39%</strong>，较中期（+1.87%）继续偏湿。SSP245 下降水"温和增加"的判断在流域口径下成立，与西南季风区增暖背景下的水汽增加预期一致。</p>
         </figcaption>
       </figure>
       <figure class="fig-card" data-dom="ws" data-var="pr" data-scen="ssp245" data-win="late" data-type="trend">
@@ -758,7 +750,7 @@ sup a:hover { text-decoration: underline; }
         <figcaption class="fig-cap">
           <div class="fig-head"><span class="fig-no">图 27</span><span class="fig-type">MK 趋势</span></div>
           <h4>流域 MK 趋势检验（Sen 斜率）· SSP245 · 2081–2100</h4>
-          <p><strong>100% 格点显著</strong>，平均 Sen 斜率 +5.7 mm/年——从中期 0% 跃升至全域显著，湿润信号随窗口累积越过噪声门槛。降水趋势的可检测时间尺度长于气温，这与气候学的一般认识相符。</p>
+          <p><strong>100% 格点显著</strong>，平均 Sen 斜率 +5.7 mm/年——从中期 0% 跃升至全流域显著，湿润信号随窗口累积越过噪声门槛。降水趋势的可检测时间尺度长于气温，这与气候学的一般认识相符。</p>
         </figcaption>
       </figure>
       <figure class="fig-card" data-dom="ws" data-var="pr" data-scen="ssp245" data-win="late" data-type="extreme">
@@ -792,7 +784,7 @@ sup a:hover { text-decoration: underline; }
         <figcaption class="fig-cap">
           <div class="fig-head"><span class="fig-no">图 30</span><span class="fig-type">空间变化</span></div>
           <h4>流域降水变化率 ΔP（%）· SSP585 · 2041–2060</h4>
-          <p>流域平均 <strong>−1.5%</strong>（全域 −2.1%，图 65），与同期 SSP245（+1.87%）方向相反——两情景的中期降水分岔早于气温分岔出现，情景敏感性在降水上更强。</p>
+          <p>流域平均 <strong>−1.5%</strong>，与同期 SSP245（+1.87%）方向相反——两情景的中期降水分岔早于气温分岔出现，情景敏感性在降水上更强。</p>
         </figcaption>
       </figure>
       <figure class="fig-card" data-dom="ws" data-var="pr" data-scen="ssp585" data-win="mid" data-type="trend">
@@ -800,7 +792,7 @@ sup a:hover { text-decoration: underline; }
         <figcaption class="fig-cap">
           <div class="fig-head"><span class="fig-no">图 31</span><span class="fig-type">MK 趋势</span></div>
           <h4>流域 MK 趋势检验（Sen 斜率）· SSP585 · 2041–2060</h4>
-          <p><strong>100% 格点显著</strong>，平均 Sen 斜率 −5.2 mm/年（全域版图 67 为 92.2%）。中期"轻度变干"虽幅度小，但方向在流域内高度一致，统计上成立。</p>
+          <p><strong>100% 格点显著</strong>，平均 Sen 斜率 −5.2 mm/年。中期"轻度变干"虽幅度小，但方向在流域内高度一致，统计上成立。</p>
         </figcaption>
       </figure>
       <figure class="fig-card" data-dom="ws" data-var="pr" data-scen="ssp585" data-win="mid" data-type="extreme">
@@ -826,7 +818,7 @@ sup a:hover { text-decoration: underline; }
         <figcaption class="fig-cap">
           <div class="fig-head"><span class="fig-no">图 33</span><span class="fig-type">绝对场</span></div>
           <h4>流域年降水：现状 vs SSP585 · 2081–2100（mm/年）</h4>
-          <p>末期流域年降水 <strong>1411.4 mm</strong>（+79.9 mm），比中期（图 29 的 1311.5 mm）由干转湿、大幅回摆——该转折由两模式的方向分歧驱动（MPI 偏干、MRI 偏湿，见全域版图 69 的模式间差异说明），不确定性大。</p>
+          <p>末期流域年降水 <strong>1411.4 mm</strong>（+79.9 mm），比中期（图 29 的 1311.5 mm）由干转湿、大幅回摆——该转折由两模式的方向分歧驱动（MPI 偏干、MRI 偏湿），不确定性大。</p>
         </figcaption>
       </figure>
       <figure class="fig-card" data-dom="ws" data-var="pr" data-scen="ssp585" data-win="late" data-type="change">
@@ -834,7 +826,7 @@ sup a:hover { text-decoration: underline; }
         <figcaption class="fig-cap">
           <div class="fig-head"><span class="fig-no">图 34</span><span class="fig-type">空间变化</span></div>
           <h4>流域降水变化率 ΔP（%）· SSP585 · 2081–2100</h4>
-          <p>流域平均 <strong>+6.0%</strong>（全域 +5.7%，图 69）。此为集合中位数口径——MPI 单模式为 −6.1%、MRI 为偏湿，<strong>两模式符号相反</strong>，是最直接的多模式必要性证据；决策引用必须附带模式间区间而非仅中位数。</p>
+          <p>流域平均 <strong>+6.0%</strong>。此为集合中位数口径——MPI 单模式为 −6.1%、MRI 为偏湿，<strong>两模式符号相反</strong>，是最直接的多模式必要性证据；决策引用必须附带模式间区间而非仅中位数。</p>
         </figcaption>
       </figure>
       <figure class="fig-card" data-dom="ws" data-var="pr" data-scen="ssp585" data-win="late" data-type="trend">
@@ -851,374 +843,6 @@ sup a:hover { text-decoration: underline; }
           <div class="fig-head"><span class="fig-no">图 36</span><span class="fig-type">极端指标</span></div>
           <h4>流域强降水占比变化 R95p（百分点）· SSP585 · 2081–2100</h4>
           <p>均匀 <strong>−14.2 pp</strong>，同图 24 的口径限制说明。流域版降水极端指标的可靠结论应表述为："在月值降尺度数据口径下，强降水占比变化不可信，需未来引入日值数据重估"——这已列入项目改进计划。</p>
-        </figcaption>
-      </figure>
-    </div>
-  </div>
-
-  <!-- ======== 气温 · SSP245 · 2041–2060 ======== -->
-  <div class="group" data-gvar="tas" data-gscen="ssp245" data-gwin="mid">
-    <div class="group-head">
-      <h3>气温 · SSP245 · 2041–2060（中期） · 全域 1km</h3>
-      <div class="gnote">窗口均值变化 <strong>+1.36 K</strong>；窗口内 MK 显著格点占比 98.9%</div>
-    </div>
-    <div class="fig-grid">
-      <figure class="fig-card" data-dom="regional" data-var="tas" data-scen="ssp245" data-win="mid" data-type="change">
-        <div class="fig-media"><img src="assets/figures/tas_ssp245_2041-2060_change.png" alt="年均温变化空间分布，SSP245 中期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 37</span><span class="fig-type">空间变化</span></div>
-          <h4>年均温变化 ΔT（K）· SSP245 · 2041–2060</h4>
-          <p>中排放路径下中期全域一致增温，区域平均 <strong>+1.36 K</strong>。格点间升温幅度存在空间差异，等值线走向受地形调制——这正是 1km 降尺度相对粗网格插值的信息增量。可与图 42（同期情景的末期）对比阅读排放路径的时间演化。</p>
-        </figcaption>
-      </figure>
-      <figure class="fig-card" data-dom="regional" data-var="tas" data-scen="ssp245" data-win="mid" data-type="ts">
-        <div class="fig-media"><img src="assets/figures/tas_ssp245_2041-2060_ts.png" alt="气温时间序列，SSP245 中期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 38</span><span class="fig-type">时间序列</span></div>
-          <h4>气温区域平均 · SSP245 · 2041–2060（集合区间）</h4>
-          <p>20 年月值序列：黑线为 MPI 与 MRI 双模式集合中位数，灰色阴影为模式间 min–max 范围。季节振幅约 11–12 K（雨热同季的高原季风气候特征）；<strong>冬季的模式间分歧明显大于夏季</strong>，提示两模式对冬季气温的模拟差异是集合不确定性的主要来源。</p>
-        </figcaption>
-      </figure>
-      <figure class="fig-card" data-dom="regional" data-var="tas" data-scen="ssp245" data-win="mid" data-type="trend">
-        <div class="fig-media"><img src="assets/figures/tas_ssp245_2041-2060_trend.png" alt="MK 趋势显著性，SSP245 中期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 39</span><span class="fig-type">MK 趋势</span></div>
-          <h4>MK 趋势检验（Sen 斜率）· SSP245 · 2041–2060</h4>
-          <p>填色为 Sen 斜率（K/年），黑点标注 p &lt; 0.05 的显著格点。中期窗口 <strong>98.9% 格点通过显著性检验</strong>且斜率一致为正——升温趋势在统计上稳健，不是年际波动的假象。</p>
-        </figcaption>
-      </figure>
-      <figure class="fig-card" data-dom="regional" data-var="tas" data-scen="ssp245" data-win="mid" data-type="extreme">
-        <div class="fig-media"><img src="assets/figures/tas_ssp245_2041-2060_txx_anom.png" alt="极端暖月距平，SSP245 中期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 40</span><span class="fig-type">极端指标</span></div>
-          <h4>极端暖月距平 TXx（K）· SSP245 · 2041–2060</h4>
-          <p>窗口内最暖月相对基准期同期距平（ETCCDI TXx 的月值近似）。极端暖月与平均态<strong>同步抬升</strong>，中期距平幅度明显低于末期窗口（对比图 55 可见梯度），说明极端高温风险随排放路径推进而累积。</p>
-        </figcaption>
-      </figure>
-      <figure class="fig-card" data-dom="regional" data-var="tas" data-scen="ssp245" data-win="mid" data-type="extreme">
-        <div class="fig-media"><img src="assets/figures/tas_ssp245_2041-2060_tnn_anom.png" alt="极端冷月距平，SSP245 中期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 41</span><span class="fig-type">极端指标</span></div>
-          <h4>极端冷月距平 TNn（K）· SSP245 · 2041–2060</h4>
-          <p>最冷月相对基准期同期距平。冷月抬升与暖月同步发生，对天池这类高原湖泊的冬季水温、混合翻转过程与流域物候是关键信号；与图 40 成对呈现可展示"分布整体平移"的变暖特征。</p>
-        </figcaption>
-      </figure>
-    </div>
-  </div>
-
-  <!-- ======== 气温 · SSP245 · 2081–2100 ======== -->
-  <div class="group" data-gvar="tas" data-gscen="ssp245" data-gwin="late">
-    <div class="group-head">
-      <h3>气温 · SSP245 · 2081–2100（末期） · 全域 1km</h3>
-      <div class="gnote">窗口均值变化 <strong>+2.14 K</strong>；窗口内 MK 显著格点占比 0%（路径趋稳，见解读）</div>
-    </div>
-    <div class="fig-grid">
-      <figure class="fig-card" data-dom="regional" data-var="tas" data-scen="ssp245" data-win="late" data-type="change">
-        <div class="fig-media"><img src="assets/figures/tas_ssp245_2081-2100_change.png" alt="年均温变化空间分布，SSP245 末期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 42</span><span class="fig-type">空间变化</span></div>
-          <h4>年均温变化 ΔT（K）· SSP245 · 2081–2100</h4>
-          <p>末期区域平均 <strong>+2.14 K</strong>，约为中期（+1.36 K）的 1.6 倍——SSP245 路径下变暖并未停滞。与图 52（SSP585 末期 +4.18 K）对比即"减排价值"的量化呈现：两种路径末期相差约 2 K。</p>
-        </figcaption>
-      </figure>
-      <figure class="fig-card" data-dom="regional" data-var="tas" data-scen="ssp245" data-win="late" data-type="ts">
-        <div class="fig-media"><img src="assets/figures/tas_ssp245_2081-2100_ts.png" alt="气温时间序列，SSP245 末期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 43</span><span class="fig-type">时间序列</span></div>
-          <h4>气温区域平均 · SSP245 · 2081–2100（集合区间）</h4>
-          <p>末期年际波动平稳，集合阴影带宽与中期相当，模式不确定性未随时间发散。序列整体水平相对基准期系统性上移约 2 K，季节形态保持稳定。</p>
-        </figcaption>
-      </figure>
-      <figure class="fig-card" data-dom="regional" data-var="tas" data-scen="ssp245" data-win="late" data-type="trend">
-        <div class="fig-media"><img src="assets/figures/tas_ssp245_2081-2100_trend.png" alt="MK 趋势显著性，SSP245 末期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 44</span><span class="fig-type">MK 趋势</span></div>
-          <h4>MK 趋势检验（Sen 斜率）· SSP245 · 2081–2100</h4>
-          <p>窗口内 <strong>0% 格点显著</strong>——这不是模型失效：SSP245 排放路径在 2080 年后温度趋稳，20 年窗口内以自然变率为主（年度序列已经独立核实确为平坦）。读图时应区分"窗口内趋势不显著"与"相对基准期已显著增暖 +2.14 K"两个层面。</p>
-        </figcaption>
-      </figure>
-      <figure class="fig-card" data-dom="regional" data-var="tas" data-scen="ssp245" data-win="late" data-type="extreme">
-        <div class="fig-media"><img src="assets/figures/tas_ssp245_2081-2100_txx_anom.png" alt="极端暖月距平，SSP245 末期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 45</span><span class="fig-type">极端指标</span></div>
-          <h4>极端暖月距平 TXx（K）· SSP245 · 2081–2100</h4>
-          <p>最暖月距平随窗口推进继续抬升，幅度高于中期（图 40）。全域距平为正且空间分布相对均一，说明极端高温压力在整个流域同步加重，无明显"避风港"格点。</p>
-        </figcaption>
-      </figure>
-      <figure class="fig-card" data-dom="regional" data-var="tas" data-scen="ssp245" data-win="late" data-type="extreme">
-        <div class="fig-media"><img src="assets/figures/tas_ssp245_2081-2100_tnn_anom.png" alt="极端冷月距平，SSP245 末期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 46</span><span class="fig-type">极端指标</span></div>
-          <h4>极端冷月距平 TNn（K）· SSP245 · 2081–2100</h4>
-          <p>最冷月距平为正：变暖不仅表现为夏天更热，也表现为<strong>冬天更暖</strong>。冷月抬升会削减湖泊冬季冰封概率、改变春季混合启动时间，对天池水温结构与水生态是比平均升温更直接的压力因子。</p>
-        </figcaption>
-      </figure>
-    </div>
-  </div>
-
-  <!-- ======== 气温 · SSP585 · 2041–2060 ======== -->
-  <div class="group" data-gvar="tas" data-gscen="ssp585" data-gwin="mid">
-    <div class="group-head">
-      <h3>气温 · SSP585 · 2041–2060（中期） · 全域 1km</h3>
-      <div class="gnote">窗口均值变化 <strong>+1.89 K</strong>；窗口内 MK 显著格点占比 100%</div>
-    </div>
-    <div class="fig-grid">
-      <figure class="fig-card" data-dom="regional" data-var="tas" data-scen="ssp585" data-win="mid" data-type="change">
-        <div class="fig-media"><img src="assets/figures/tas_ssp585_2041-2060_change.png" alt="年均温变化空间分布，SSP585 中期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 47</span><span class="fig-type">空间变化</span></div>
-          <h4>年均温变化 ΔT（K）· SSP585 · 2041–2060</h4>
-          <p>高排放路径中期区域平均 <strong>+1.89 K</strong>，与同期 SSP245（+1.36 K）相差约 0.5 K——两种路径在 21 世纪中叶尚未明显分岔，减排效益主要在下半世纪显现（对比图 52）。</p>
-        </figcaption>
-      </figure>
-      <figure class="fig-card" data-dom="regional" data-var="tas" data-scen="ssp585" data-win="mid" data-type="ts">
-        <div class="fig-media"><img src="assets/figures/tas_ssp585_2041-2060_ts.png" alt="气温时间序列，SSP585 中期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 48</span><span class="fig-type">时间序列</span></div>
-          <h4>气温区域平均 · SSP585 · 2041–2060（集合区间）</h4>
-          <p>季节循环形态与 SSP245 一致，但序列水平整体更高。模式间阴影带提供了逐月的不确定性边界——注意阴影在冷季更宽，暖季两模式几乎重合，集合结果在夏季可信度更高。</p>
-        </figcaption>
-      </figure>
-      <figure class="fig-card" data-dom="regional" data-var="tas" data-scen="ssp585" data-win="mid" data-type="trend">
-        <div class="fig-media"><img src="assets/figures/tas_ssp585_2041-2060_trend.png" alt="MK 趋势显著性，SSP585 中期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 49</span><span class="fig-type">MK 趋势</span></div>
-          <h4>MK 趋势检验（Sen 斜率）· SSP585 · 2041–2060</h4>
-          <p><strong>100% 格点显著增温</strong>。高排放路径下升温信号强到在任意 20 年窗口内都能被逐格点统计检验捕捉——信号强度远超自然噪声。</p>
-        </figcaption>
-      </figure>
-      <figure class="fig-card" data-dom="regional" data-var="tas" data-scen="ssp585" data-win="mid" data-type="extreme">
-        <div class="fig-media"><img src="assets/figures/tas_ssp585_2041-2060_txx_anom.png" alt="极端暖月距平，SSP585 中期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 50</span><span class="fig-type">极端指标</span></div>
-          <h4>极端暖月距平 TXx（K）· SSP585 · 2041–2060</h4>
-          <p>极端暖月距平为正且高于 SSP245 同期（图 40），分布均匀。中期已是 +1.5 K 量级的极端高温抬升，对流域内农业生产（如核桃、水稻的夏季热害）构成早期风险信号。</p>
-        </figcaption>
-      </figure>
-      <figure class="fig-card" data-dom="regional" data-var="tas" data-scen="ssp585" data-win="mid" data-type="extreme">
-        <div class="fig-media"><img src="assets/figures/tas_ssp585_2041-2060_tnn_anom.png" alt="极端冷月距平，SSP585 中期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 51</span><span class="fig-type">极端指标</span></div>
-          <h4>极端冷月距平 TNn（K）· SSP585 · 2041–2060</h4>
-          <p>最冷月距平与同期 TXx 抬升幅度相当，冷尾与暖尾同步右移——变暖是"分布整体平移"而非"仅暖端拉伸"，这一特征在气候归因上对应大尺度辐射强迫而非环流极端化。</p>
-        </figcaption>
-      </figure>
-    </div>
-  </div>
-
-  <!-- ======== 气温 · SSP585 · 2081–2100 ======== -->
-  <div class="group" data-gvar="tas" data-gscen="ssp585" data-gwin="late">
-    <div class="group-head">
-      <h3>气温 · SSP585 · 2081–2100（末期） · 全域 1km</h3>
-      <div class="gnote">窗口均值变化 <strong>+4.18 K</strong>（MPI +3.90 / MRI +4.46）；MK 显著格点占比 100%</div>
-    </div>
-    <div class="fig-grid">
-      <figure class="fig-card" data-dom="regional" data-var="tas" data-scen="ssp585" data-win="late" data-type="change">
-        <div class="fig-media"><img src="assets/figures/tas_ssp585_2081-2100_change.png" alt="年均温变化空间分布，SSP585 末期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 52</span><span class="fig-type">空间变化</span></div>
-          <h4>年均温变化 ΔT（K）· SSP585 · 2081–2100</h4>
-          <p><strong>图册主结果图。</strong>集合中位 +4.18 K（模式间：MPI +3.90 / MRI +4.46，离散约 0.8 K）。全域升温 4 K 以上；<strong>河谷廊道升温略低、山脊更强</strong>，地形对升温的调制清晰可辨——这是 1km 降尺度相对粗网格信息增量的直接证据。</p>
-        </figcaption>
-      </figure>
-      <figure class="fig-card" data-dom="regional" data-var="tas" data-scen="ssp585" data-win="late" data-type="ts">
-        <div class="fig-media"><img src="assets/figures/tas_ssp585_2081-2100_ts.png" alt="气温时间序列，SSP585 末期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 53</span><span class="fig-type">时间序列</span></div>
-          <h4>气温区域平均 · SSP585 · 2081–2100（集合区间）</h4>
-          <p>末期序列相对基准期系统性上移约 4 K，夏季峰值接近 295 K（约 22°C）。<strong>冬季模式间离散明显大于夏季</strong>——冬季升温的集合不确定性最大，做影响评估（如冰情、物候）时应同时引用区间而非仅中位数。</p>
-        </figcaption>
-      </figure>
-      <figure class="fig-card" data-dom="regional" data-var="tas" data-scen="ssp585" data-win="late" data-type="trend">
-        <div class="fig-media"><img src="assets/figures/tas_ssp585_2081-2100_trend.png" alt="MK 趋势显著性，SSP585 末期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 54</span><span class="fig-type">MK 趋势</span></div>
-          <h4>MK 趋势检验（Sen 斜率）· SSP585 · 2081–2100</h4>
-          <p><strong>100% 格点显著</strong>，Sen 斜率全域为正。即便在温度趋稳假设不成立的 SSP585 下，窗口内趋势检验依然全部通过，与图 44（SSP245 末期 0%）形成鲜明对照——两类情景的趋势可检测性差异本身就是有统计意义的结论。</p>
-        </figcaption>
-      </figure>
-      <figure class="fig-card" data-dom="regional" data-var="tas" data-scen="ssp585" data-win="late" data-type="extreme">
-        <div class="fig-media"><img src="assets/figures/tas_ssp585_2081-2100_txx_anom.png" alt="极端暖月距平，SSP585 末期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 55</span><span class="fig-type">极端指标</span></div>
-          <h4>极端暖月距平 TXx（K）· SSP585 · 2081–2100</h4>
-          <p>全域距平 <strong>+3.5 K 左右</strong>，且空间分布高度均一——极端高温与平均升温同步抬升，不存在"平均变暖但极端不变"的缓冲。叠加高原湖泊生态对温度的敏感性，这是对天池水生态压力最大的单项信号（流域版口径 +3.51 K，图 19）。</p>
-        </figcaption>
-      </figure>
-      <figure class="fig-card" data-dom="regional" data-var="tas" data-scen="ssp585" data-win="late" data-type="extreme">
-        <div class="fig-media"><img src="assets/figures/tas_ssp585_2081-2100_tnn_anom.png" alt="极端冷月距平，SSP585 末期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 56</span><span class="fig-type">极端指标</span></div>
-          <h4>极端冷月距平 TNn（K）· SSP585 · 2081–2100</h4>
-          <p>最冷月抬升幅度与 TXx 同量级。冷月基数低、抬升同样的绝对量意味着<strong>相对变化更大</strong>：冬季热状况的改变（冰封期缩短、融雪提前）将先于夏季热害显现，是流域水文与生态响应的领先指标。</p>
-        </figcaption>
-      </figure>
-    </div>
-  </div>
-
-  <!-- ======== 降水 · SSP245 · 2041–2060 ======== -->
-  <div class="group" data-gvar="pr" data-gscen="ssp245" data-gwin="mid">
-    <div class="group-head pr">
-      <h3>降水 · SSP245 · 2041–2060（中期） · 全域 1km</h3>
-      <div class="gnote">窗口均值变化 <strong>+1.5%</strong>；窗口内 MK 显著格点占比 15.8%</div>
-    </div>
-    <div class="fig-grid">
-      <figure class="fig-card" data-dom="regional" data-var="pr" data-scen="ssp245" data-win="mid" data-type="change">
-        <div class="fig-media"><img src="assets/figures/pr_ssp245_2041-2060_change.png" alt="降水变化空间分布，SSP245 中期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 57</span><span class="fig-type">空间变化</span></div>
-          <h4>降水变化率 ΔP（%）· SSP245 · 2041–2060</h4>
-          <p>中期降水轻度增加，区域平均 <strong>+1.5%</strong>。绿色（增湿）与棕色（变干）格点在空间上交错，说明弱信号期格点级方向不一致——降水的空间变率远大于气温，读图时应以区域整体而非单格点结论为准。</p>
-        </figcaption>
-      </figure>
-      <figure class="fig-card" data-dom="regional" data-var="pr" data-scen="ssp245" data-win="mid" data-type="ts">
-        <div class="fig-media"><img src="assets/figures/pr_ssp245_2041-2060_ts.png" alt="降水时间序列，SSP245 中期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 58</span><span class="fig-type">时间序列</span></div>
-          <h4>降水区域平均 · SSP245 · 2041–2060（集合区间）</h4>
-          <p>干湿季对比强烈：雨季（5–10 月）降水远高于干季，符合西南季风区特征。<strong>模式间分歧集中在雨季</strong>——两模式对季风降水的模拟差异是降水集合不确定性的主体，干季则几乎一致。</p>
-        </figcaption>
-      </figure>
-      <figure class="fig-card" data-dom="regional" data-var="pr" data-scen="ssp245" data-win="mid" data-type="trend">
-        <div class="fig-media"><img src="assets/figures/pr_ssp245_2041-2060_trend.png" alt="MK 趋势显著性，SSP245 中期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 59</span><span class="fig-type">MK 趋势</span></div>
-          <h4>MK 趋势检验（Sen 斜率）· SSP245 · 2041–2060</h4>
-          <p>仅 <strong>15.8% 格点显著</strong>。降水信号弱、年际噪声大是气候科学的普遍现象（对比气温同窗口 98.9%）——中期降水"变化"在统计上尚不成立，任何引用都应注明这一不确定性，避免过度解读。</p>
-        </figcaption>
-      </figure>
-      <figure class="fig-card" data-dom="regional" data-var="pr" data-scen="ssp245" data-win="mid" data-type="extreme">
-        <div class="fig-media"><img src="assets/figures/pr_ssp245_2041-2060_r95p.png" alt="强降水占比变化，SSP245 中期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 60</span><span class="fig-type">极端指标</span></div>
-          <h4>强降水占比变化 R95p（百分点）· SSP245 · 2041–2060</h4>
-          <p>超过基准期同月 95 分位的月降水占年总量的比例变化。中期变化幅度小、正负格点混合，强降水结构尚未出现方向性调整；作为与末期图 72 对比的"结构基准"阅读。</p>
-        </figcaption>
-      </figure>
-    </div>
-  </div>
-
-  <!-- ======== 降水 · SSP245 · 2081–2100 ======== -->
-  <div class="group" data-gvar="pr" data-gscen="ssp245" data-gwin="late">
-    <div class="group-head pr">
-      <h3>降水 · SSP245 · 2081–2100（末期） · 全域 1km</h3>
-      <div class="gnote">窗口均值变化 <strong>+2.6%</strong>；窗口内 MK 显著格点占比 86.9%</div>
-    </div>
-    <div class="fig-grid">
-      <figure class="fig-card" data-dom="regional" data-var="pr" data-scen="ssp245" data-win="late" data-type="change">
-        <div class="fig-media"><img src="assets/figures/pr_ssp245_2081-2100_change.png" alt="降水变化空间分布，SSP245 末期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 61</span><span class="fig-type">空间变化</span></div>
-          <h4>降水变化率 ΔP（%）· SSP245 · 2081–2100</h4>
-          <p>末期区域平均 <strong>+2.6%</strong>，较中期（+1.5%）继续偏湿，且空间一致性提高。SSP245 下降水呈"温和增加"的整体判断，与西南季风区在增暖背景下的水汽增加预期一致。</p>
-        </figcaption>
-      </figure>
-      <figure class="fig-card" data-dom="regional" data-var="pr" data-scen="ssp245" data-win="late" data-type="ts">
-        <div class="fig-media"><img src="assets/figures/pr_ssp245_2081-2100_ts.png" alt="降水时间序列，SSP245 末期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 62</span><span class="fig-type">时间序列</span></div>
-          <h4>降水区域平均 · SSP245 · 2081–2100（集合区间）</h4>
-          <p>雨季量级与形态保持，序列整体略高于基准期水平。模式间范围在雨季个别年份展开较大，说明极端湿润年的模式分歧高于普通年份——引用"最湿年"结论时需谨慎。</p>
-        </figcaption>
-      </figure>
-      <figure class="fig-card" data-dom="regional" data-var="pr" data-scen="ssp245" data-win="late" data-type="trend">
-        <div class="fig-media"><img src="assets/figures/pr_ssp245_2081-2100_trend.png" alt="MK 趋势显著性，SSP245 末期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 63</span><span class="fig-type">MK 趋势</span></div>
-          <h4>MK 趋势检验（Sen 斜率）· SSP245 · 2081–2100</h4>
-          <p><strong>86.9% 格点显著</strong>，较中期 15.8% 大幅提高——信号随窗口累积越过噪声门槛。与气温相反，降水趋势由"不显著"转为"多数显著"需要更长的时间积累，这一对比本身可作为方法稳健性的佐证。</p>
-        </figcaption>
-      </figure>
-      <figure class="fig-card" data-dom="regional" data-var="pr" data-scen="ssp245" data-win="late" data-type="extreme">
-        <div class="fig-media"><img src="assets/figures/pr_ssp245_2081-2100_r95p.png" alt="强降水占比变化，SSP245 末期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 64</span><span class="fig-type">极端指标</span></div>
-          <h4>强降水占比变化 R95p（百分点）· SSP245 · 2081–2100</h4>
-          <p>总量温和增加的背景下，强降水占比变化的空间分异性大。结合图 61 阅读可区分"总量增加型"与"结构重组型"两类格点——后者对水土保持与面源污染的意义更大。</p>
-        </figcaption>
-      </figure>
-    </div>
-  </div>
-
-  <!-- ======== 降水 · SSP585 · 2041–2060 ======== -->
-  <div class="group" data-gvar="pr" data-gscen="ssp585" data-gwin="mid">
-    <div class="group-head pr">
-      <h3>降水 · SSP585 · 2041–2060（中期） · 全域 1km</h3>
-      <div class="gnote">窗口均值变化 <strong>−2.1%</strong>；窗口内 MK 显著格点占比 92.2%</div>
-    </div>
-    <div class="fig-grid">
-      <figure class="fig-card" data-dom="regional" data-var="pr" data-scen="ssp585" data-win="mid" data-type="change">
-        <div class="fig-media"><img src="assets/figures/pr_ssp585_2041-2060_change.png" alt="降水变化空间分布，SSP585 中期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 65</span><span class="fig-type">空间变化</span></div>
-          <h4>降水变化率 ΔP（%）· SSP585 · 2041–2060</h4>
-          <p>高排放路径中期区域平均 <strong>−2.1%</strong>，轻度变干——与同期 SSP245（+1.5%）方向相反。两情景在中期已出现降水分岔，比气温分岔（图 47 vs 图 37）出现更早，可作为"情景敏感性"的展示素材。</p>
-        </figcaption>
-      </figure>
-      <figure class="fig-card" data-dom="regional" data-var="pr" data-scen="ssp585" data-win="mid" data-type="ts">
-        <div class="fig-media"><img src="assets/figures/pr_ssp585_2041-2060_ts.png" alt="降水时间序列，SSP585 中期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 66</span><span class="fig-type">时间序列</span></div>
-          <h4>降水区域平均 · SSP585 · 2041–2060（集合区间）</h4>
-          <p>雨季量级略低于基准期，干湿季形态不变。注意阴影带覆盖范围：降水模式间离散的绝对量（数十 mm/月）远大于变化信号本身（约 2 mm/月），这是降水预测不确定性表达的必要性所在。</p>
-        </figcaption>
-      </figure>
-      <figure class="fig-card" data-dom="regional" data-var="pr" data-scen="ssp585" data-win="mid" data-type="trend">
-        <div class="fig-media"><img src="assets/figures/pr_ssp585_2041-2060_trend.png" alt="MK 趋势显著性，SSP585 中期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 67</span><span class="fig-type">MK 趋势</span></div>
-          <h4>MK 趋势检验（Sen 斜率）· SSP585 · 2041–2060</h4>
-          <p><strong>92.2% 格点显著</strong>（斜率为负）。高排放下的变干信号在中期窗口即可被统计检验捕捉，方向一致的格点占绝对多数——中期"轻度变干"虽幅度小，但空间上具有一致性。</p>
-        </figcaption>
-      </figure>
-      <figure class="fig-card" data-dom="regional" data-var="pr" data-scen="ssp585" data-win="mid" data-type="extreme">
-        <div class="fig-media"><img src="assets/figures/pr_ssp585_2041-2060_r95p.png" alt="强降水占比变化，SSP585 中期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 68</span><span class="fig-type">极端指标</span></div>
-          <h4>强降水占比变化 R95p（百分点）· SSP585 · 2041–2060</h4>
-          <p>变干窗口中强降水占比以降低为主，即降水的减少部分地由强降水月份承担。该窗口是末期（图 72）结构转变的前奏：先强降水收缩，后总量被偏湿模式拉回（图 69）。</p>
-        </figcaption>
-      </figure>
-    </div>
-  </div>
-
-  <!-- ======== 降水 · SSP585 · 2081–2100 ======== -->
-  <div class="group" data-gvar="pr" data-gscen="ssp585" data-gwin="late">
-    <div class="group-head pr">
-      <h3>降水 · SSP585 · 2081–2100（末期） · 全域 1km</h3>
-      <div class="gnote">窗口均值变化 <strong>+5.7%</strong>（MPI −6.1% / MRI 偏湿拉正）；MK 显著格点占比 75.9%</div>
-    </div>
-    <div class="fig-grid">
-      <figure class="fig-card" data-dom="regional" data-var="pr" data-scen="ssp585" data-win="late" data-type="change">
-        <div class="fig-media"><img src="assets/figures/pr_ssp585_2081-2100_change.png" alt="降水变化空间分布，SSP585 末期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 69</span><span class="fig-type">空间变化</span></div>
-          <h4>降水变化率 ΔP（%）· SSP585 · 2081–2100</h4>
-          <p>末期集合中位 <strong>+5.7%</strong>——注意这个数字的来历：MPI 单模式为 −6.1%，偏湿的 MRI 将集合拉正。<strong>两模式给出相反符号</strong>，是多模式必要性的最直接证据；本图册对降水的末期结论应表述为"方向存在模式分歧，中位偏增 5.7%"。</p>
-        </figcaption>
-      </figure>
-      <figure class="fig-card" data-dom="regional" data-var="pr" data-scen="ssp585" data-win="late" data-type="ts">
-        <div class="fig-media"><img src="assets/figures/pr_ssp585_2081-2100_ts.png" alt="降水时间序列，SSP585 末期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 70</span><span class="fig-type">时间序列</span></div>
-          <h4>降水区域平均 · SSP585 · 2081–2100（集合区间）</h4>
-          <p>末期集合区间明显比其它窗口宽——两模式末期降水分歧加大，阴影带上界（MRI）与下界（MPI）的差值在雨季可达数十 mm/月。这提示 Ssp585 末期降水的情景不确定性已超过信号本身，任何决策引用必须附带区间。</p>
-        </figcaption>
-      </figure>
-      <figure class="fig-card" data-dom="regional" data-var="pr" data-scen="ssp585" data-win="late" data-type="trend">
-        <div class="fig-media"><img src="assets/figures/pr_ssp585_2081-2100_trend.png" alt="MK 趋势显著性，SSP585 末期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 71</span><span class="fig-type">MK 趋势</span></div>
-          <h4>MK 趋势检验（Sen 斜率）· SSP585 · 2081–2100</h4>
-          <p><strong>75.9% 格点显著</strong>。与气温（100%）的差距来自两模式信号方向相反区域的相互抵消——显著性高的格点集中于两模式一致的湿润区，分歧区则趋势不成立，空间图与集合区间图（图 70）互为印证。</p>
-        </figcaption>
-      </figure>
-      <figure class="fig-card" data-dom="regional" data-var="pr" data-scen="ssp585" data-win="late" data-type="extreme">
-        <div class="fig-media"><img src="assets/figures/pr_ssp585_2081-2100_r95p.png" alt="强降水占比变化，SSP585 末期" loading="lazy"></div>
-        <figcaption class="fig-cap">
-          <div class="fig-head"><span class="fig-no">图 72</span><span class="fig-type">极端指标</span></div>
-          <h4>强降水占比变化 R95p（百分点）· SSP585 · 2081–2100</h4>
-          <p>图册最需细读的图：<strong>总量中位 +5.7%，但强降水占比以 −10 ~ −15 个百分点为主</strong>。即降水结构向"总量微增、强降水月份集中度下降、分配更分散"偏移——对天池流域意味着汛期洪峰压力趋缓而枯季供水更稳的潜在可能，但也削弱了水库"以洪补枯"的调蓄空间。</p>
         </figcaption>
       </figure>
     </div>
