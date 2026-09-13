@@ -46,7 +46,7 @@
       axisLabel: { color: muted },
       splitLine: { lineStyle: { color: rule } }
     },
-    series: bars([1.43, 2.22, 1.98, 4.32])
+    series: bars([1.71, 2.69, 2.23, 4.75])
   });
 
   var chartPr = echarts.init(document.getElementById("chart-pr"), null, { renderer: "svg" });
@@ -62,7 +62,7 @@
       axisLabel: { color: muted },
       splitLine: { lineStyle: { color: rule } }
     },
-    series: bars([1.87, 3.39, -1.5, 6.0])
+    series: bars([2.83, 1.21, 0.55, 15.64])
   });
 
   window.addEventListener("resize", function () {
