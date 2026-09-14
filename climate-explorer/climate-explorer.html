@@ -134,9 +134,12 @@ input[type="range"]::-moz-range-thumb {
 .lg i { display: inline-block; }
 .lg-ws { width: 20px; height: 0; border-top: 2.5px solid #111; }
 .lg-lake { width: 20px; height: 0; border-top: 2.5px solid #2980b9; }
-.lg-lakebal { width: 14px; height: 14px; border-radius: 3px;
-  background: linear-gradient(90deg, #92400e 0%, #e7e5e4 50%, #1d4ed8 100%);
-  border: 1px solid var(--line); }
+.lkbar-wrap { display: inline-flex; flex-direction: column; gap: 1px; vertical-align: middle; }
+.lkbar { width: 76px; height: 10px; border-radius: 3px; border: 1px solid var(--line);
+  background: linear-gradient(90deg, #92400e 0%, #e7e5e4 50%, #1d4ed8 100%); }
+.lkbar-lbls { display: flex; justify-content: space-between; font-size: 10px;
+  color: var(--muted); font-variant-numeric: tabular-nums; line-height: 1; }
+.lkbar-lbls i { font-style: normal; }
 .lg-star { color: #444; font-style: normal; font-size: 14px; line-height: 1; }
 .cbar-block { display: flex; align-items: center; gap: 9px; font-size: 12px; color: var(--muted);
   font-variant-numeric: tabular-nums; }
@@ -291,7 +294,7 @@ footer a { color: var(--accent); }
       <div class="legend">
         <span class="lg"><i class="lg-ws"></i>流域边界</span>
         <span class="lg"><i class="lg-lake"></i>天池湖面</span>
-        <span class="lg"><i class="lg-lakebal"></i>湖面色=水量净收支（示意）</span>
+        <span class="lg"><span class="lkbar-wrap"><span class="lkbar"></span><span class="lkbar-lbls"><i>−300</i><i>0</i><i>+300</i></span></span>湖面净收支（示意）</span>
         <span class="lg"><i class="lg-star">★</i>湖心</span>
         <span class="lg" style="color:#9aa5b1">底图：山体阴影（仅流域内显示）</span>
       </div>
