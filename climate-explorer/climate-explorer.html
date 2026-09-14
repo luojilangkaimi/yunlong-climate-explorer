@@ -78,6 +78,12 @@ h1 .accent { color: var(--accent); }
 
 /* ---------- timeline ---------- */
 .timeline { display: flex; align-items: center; gap: 18px; padding: 14px 22px; margin-bottom: 16px; }
+.btn-export {
+  border: 1px solid var(--line); background: var(--bg2); cursor: pointer; font: inherit;
+  font-size: 13px; color: var(--accent); padding: 6px 14px; border-radius: 18px;
+  transition: all .15s; white-space: nowrap;
+}
+.btn-export:hover { border-color: var(--accent); background: #ecfeff; }
 .play {
   flex: none; width: 52px; height: 52px; border-radius: 50%; border: 1px solid var(--line);
   background: var(--bg2); cursor: pointer; font-size: 17px; color: var(--accent);
@@ -98,8 +104,9 @@ input[type="range"]::-moz-range-thumb {
   width: 14px; height: 14px; border-radius: 50%; background: #fff;
   border: 3px solid var(--accent); box-shadow: 0 1px 4px rgba(0,0,0,.25); cursor: grab;
 }
-.ticks { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--muted); margin-top: 5px;
+.ticks { position: relative; height: 15px; font-size: 11.5px; color: var(--muted); margin-top: 5px;
   font-variant-numeric: tabular-nums; user-select: none; }
+.ticks span { position: absolute; transform: translateX(-50%); }
 .year-big { flex: none; min-width: 128px; text-align: center; }
 .year-big .y { font-size: 34px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: 1px; color: var(--accent); line-height: 1.1; }
 .year-big .w { font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
@@ -127,6 +134,9 @@ input[type="range"]::-moz-range-thumb {
 .lg i { display: inline-block; }
 .lg-ws { width: 20px; height: 0; border-top: 2.5px solid #111; }
 .lg-lake { width: 20px; height: 0; border-top: 2.5px solid #2980b9; }
+.lg-lakebal { width: 14px; height: 14px; border-radius: 3px;
+  background: linear-gradient(90deg, #92400e 0%, #e7e5e4 50%, #1d4ed8 100%);
+  border: 1px solid var(--line); }
 .lg-star { color: #444; font-style: normal; font-size: 14px; line-height: 1; }
 .cbar-block { display: flex; align-items: center; gap: 9px; font-size: 12px; color: var(--muted);
   font-variant-numeric: tabular-nums; }
@@ -190,6 +200,20 @@ footer a { color: var(--accent); }
   .method .cols { grid-template-columns: 1fr; }
   header { flex-direction: column; align-items: flex-start; }
 }
+@media (max-width: 720px) {
+  .wrap { padding: 16px 12px 40px; }
+  .controls { gap: 10px; padding: 12px 12px; }
+  .ctrl-group > label { display: none; }
+  .seg button { padding: 5px 10px; font-size: 12.5px; }
+  .timeline { position: sticky; top: 6px; z-index: 30; gap: 12px; padding: 10px 14px;
+    box-shadow: 0 6px 18px rgba(27,37,48,.14); }
+  .year-big { min-width: 96px; }
+  .year-big .y { font-size: 25px; }
+  .play { width: 44px; height: 44px; }
+  #chart { height: 300px; }
+  .stats { padding: 14px 16px; }
+  .legend { font-size: 11.5px; gap: 10px; }
+}
 /* ---------- 现状速览（2D 三图） ---------- */
 .present-card { padding: 16px 18px 18px; margin-bottom: 16px; }
 .present-head { margin-bottom: 12px; }
@@ -213,7 +237,7 @@ footer a { color: var(--accent); }
 <header>
   <div>
     <h1>云龙天池流域气候变化 <span class="accent">交互探索器</span></h1>
-    <p class="sub">CHELSA 1981–2010 观测基准 · CMIP6 五模式 EQM 偏差校正集合 · 20 年滑动窗口 · 2020–2090</p>
+    <p class="sub">CHELSA 观测 1981–2019 · CMIP6 五模式集合预估至 2090 · 湖泊收支示意 · 可导出 PNG</p>
   </div>
   <a class="atlas-link" href="../climate-atlas/climate-atlas.html">← 返回结果图册</a>
 </header>
@@ -235,15 +259,17 @@ footer a { color: var(--accent); }
     <div class="seg" id="seg-mode">
       <button data-m="delta" class="on">变化量 Δ</button>
       <button data-m="abs">绝对值</button>
+      <button data-m="div" title="逐格点五模式最大值−最小值，表达模式间不确定性">模式间分歧</button>
     </div>
   </div>
+  <div class="ctrl-group" style="margin-left:auto"><button class="btn-export" id="btn-export" title="将当前地图与标题导出为 PNG">⤓ 导出 PNG</button></div>
 </section>
 
 <section class="timeline card">
   <button class="play" id="btn-play" title="播放 / 暂停（空格）">▶</button>
   <div class="slider-block">
-    <input type="range" id="slider" min="2020" max="2090" step="1" value="2050">
-    <div class="ticks"><span>2020</span><span>2030</span><span>2040</span><span>2050</span><span>2060</span><span>2070</span><span>2080</span><span>2090</span></div>
+    <input type="range" id="slider" min="1981" max="2090" step="1" value="2050">
+    <div class="ticks" id="ticks"></div>
   </div>
   <div class="year-big">
     <div class="y" id="year-big">2050</div>
@@ -265,6 +291,7 @@ footer a { color: var(--accent); }
       <div class="legend">
         <span class="lg"><i class="lg-ws"></i>流域边界</span>
         <span class="lg"><i class="lg-lake"></i>天池湖面</span>
+        <span class="lg"><i class="lg-lakebal"></i>湖面色=水量净收支（示意）</span>
         <span class="lg"><i class="lg-star">★</i>湖心</span>
         <span class="lg" style="color:#9aa5b1">底图：山体阴影（仅流域内显示）</span>
       </div>
@@ -288,6 +315,9 @@ footer a { color: var(--accent); }
     <hr class="st-hr">
     <div class="abs-line" id="st-abs"><span class="lab">流域年均温</span>　<b>11.7 °C</b> → <b>13.9 °C</b></div>
     <div class="st-hist" id="st-hist">现状（1981–2010，30m 细化口径）</div>
+    <hr class="st-hr">
+    <div class="abs-line" id="lk-line"><span class="lab">湖泊水量净收支（示意）</span>　<b id="lk-val">+0.42 m/年</b></div>
+    <div class="st-hist" id="lk-note">降水−蒸发粗估 · 相对 1981–2010 距平</div>
     <hr class="st-hr">
     <div class="cmp">
       <div class="cmp-row c245"><span class="nm">SSP2-4.5</span><span id="cmp-245">+2.2 °C</span></div>
@@ -328,7 +358,7 @@ footer a { color: var(--accent); }
 <section class="chart-card card">
   <div class="chart-head">
     <h2 id="chart-title">流域年均温变化（相对 1981–2010）</h2>
-    <p class="chart-note">实线 = 五模式中位数 · 阴影 = 模式间范围 · 点击图表跳转年份 · 点击图例隐藏情景</p>
+    <p class="chart-note">灰线 = CHELSA 观测单年 · 实线 = 五模式中位数（20 年窗口） · 阴影 = 模式间范围 · 右轴虚线 = 湖泊水量净收支（示意） · 点击图表跳转年份</p>
   </div>
   <div id="chart"></div>
 </section>
@@ -343,6 +373,9 @@ footer a { color: var(--accent); }
     </div>
     <div>
       <p><b>滑动窗口</b>：滑块年 Y 对应 [Y−9, Y+10] 的 20 年平均，如 2050 → 2041–2060（与主结果的分析窗口对齐）。</p>
+      <p><b>历史观测段（1981–2019）</b>：滑块 2020 年以前显示 CHELSA 逐月数据的单年观测场（含真实年际变率），变化量相对 1981–2010 观测气候态；2020 年起切换为 20 年窗口集合预估（平滑气候态）。两段口径不同，播放时的"变亮/变稳"是口径切换而非气候突变。</p>
+      <p><b>模式间分歧图层</b>：逐格点五模式变化信号的最大值−最小值（仅未来窗口），表达"模式对变化的意见分歧"，不是观测误差；湖盆一带分歧小、分水岭一带大，与论文 §5.2 的多模式必要性论证对应。</p>
+      <p><b>湖泊水量净收支（示意级粗估，未实测校准）</b>：以 Oudin (2005) 温度法估算湖面潜在蒸发，净收入 = 湖面降水 + 径流系数 0.55 × 流域降水 × 面积比（6.98/1.38 km²） − 蒸发；图中数值为相对 1981–2010 基准的距平（mm/年 → 水位当量 m/年）。未纳入地下水、实测蒸发与水位验证，只表达"未来更湿/更干"的方向性示意，不构成水位预报。</p>
       <p><b>已知限制</b>：五个模式仍只是 CMIP6 的小样本，区间宽度存在抽样不确定性；年降水集合场年际变差偏小，逐月极端指标请以图册日值口径为准；空间分布图为逐格点中位数场，其流域年降水均值与模式年信号中位数存在口径差异（详见论文 §4.4）。</p>
       <p><b>边界数据</b>：流域由 30m GLO-30 DEM 填洼–D8 汇流自动划定（约 7.0 km²），湖盆取流域内最大洼地；地图与图层均裁剪至流域边界内，流域外不显示。</p>
     </div>
@@ -379,17 +412,74 @@ const SCEN_COLOR = { ssp245: "#2563eb", ssp585: "#dc2626" };
 
 const state = { v: "tas", s: "ssp245", mode: "delta", year: 2050 };
 
+const Y_START = M.obsYears ? M.obsYears[0] : 1981;
+const Y_FUT0 = 2020, Y_END = 2090;
+const isObs = (y) => y < Y_FUT0;
+
+/* 历史观测帧（data_hist.js，惰性加载） */
+let H = null, H_pending = false;
+function ensureHist(cb) {
+  if (H) { if (cb) cb(); return; }
+  if (H_pending) {           // 轮询等待（首次加载约 1.8MB）
+    const t = setInterval(() => { if (H) { clearInterval(t); if (cb) cb(); } }, 120);
+    return;
+  }
+  H_pending = true;
+  const s = document.createElement("script");
+  s.src = "./assets/data_hist.js";
+  s.onload = () => {
+    H = window.EXPLORER_HIST;
+    if (isObs(state.year)) { drawMap(); updateColorbar(); updateStats(); updateTitles(); }
+  };
+  document.head.appendChild(s);
+}
+
 /* base64 → Uint8Array（带缓存） */
 const u8Cache = new Map();
-function getU8(key, idx) {
-  const ck = key + "#" + idx;
-  if (u8Cache.has(ck)) return u8Cache.get(ck);
-  const b64 = FR[key][idx];
+function b64ToU8(b64) {
   const bin = atob(b64);
   const u8 = new Uint8Array(bin.length);
   for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+  return u8;
+}
+function getU8(key, idx) {
+  const ck = key + "#" + idx;
+  if (u8Cache.has(ck)) return u8Cache.get(ck);
+  const u8 = b64ToU8(FR[key][idx]);
   u8Cache.set(ck, u8);
   return u8;
+}
+function getHU8(key, idx) {
+  const ck = "h|" + key + "#" + idx;
+  if (u8Cache.has(ck)) return u8Cache.get(ck);
+  const u8 = b64ToU8(H.frames[key][idx]);
+  u8Cache.set(ck, u8);
+  return u8;
+}
+
+/* 当前帧解析：历史观测 / 未来（含 div 模式回退） */
+function frameInfo() {
+  const obs = isObs(state.year);
+  let mode = state.mode;
+  if (obs && mode === "div") mode = "delta";
+  if (obs) {
+    const i = H.years.indexOf(state.year);
+    const key = state.v + "|" + mode;
+    return { u8: getHU8(key, i), rng: H.ranges[key], mode, i, obs: true };
+  }
+  const i = YEARS.indexOf(state.year);
+  const key = state.v + "|" + state.s + "|" + mode;
+  return { u8: getU8(key, i), rng: RG[key], mode, i, obs: false };
+}
+/* 湖泊水量净收支距平（mm/年，示意） */
+function lakeAnom() {
+  const L = SE.lake;
+  if (!L) return null;
+  if (isObs(state.year)) {
+    const i = state.year - Y_START;
+    return L.obs && L.obs[i] !== undefined ? L.obs[i] : null;
+  }
+  return L[state.s][YEARS.indexOf(state.year)];
 }
 
 /* ================= 色带（ColorBrewer，与图件一致） ================= */
@@ -425,16 +515,28 @@ const CMAP = {
     [254,224,144],[253,174,97],[244,109,67],[215,48,39],[165,0,38]])),
   "pr|abs": makeLUT(evenStops([                  // YlGnBu：浅黄(干)→深蓝(湿)
     [255,255,217],[237,248,177],[199,233,180],[127,205,187],[65,182,196],
-    [29,145,192],[34,94,168],[37,52,148],[8,48,107]]))
+    [29,145,192],[34,94,168],[37,52,148],[8,48,107]])),
+  "tas|div": makeLUT(evenStops([                 // YlOrRd：分歧度（暖色递进）
+    [255,255,204],[255,237,160],[254,217,118],[254,178,76],[253,141,60],
+    [252,78,42],[227,26,28],[177,0,38]])),
+  "pr|div": makeLUT(evenStops([                  // BuPu：分歧度（冷色递进）
+    [247,252,253],[224,236,244],[191,211,230],[158,188,218],[140,150,198],
+    [140,107,177],[136,65,157],[129,15,124]]))
 };
-function lutOf() { return CMAP[state.v + "|" + state.mode]; }
+function lutOf(mode) { return CMAP[state.v + "|" + (mode || state.mode)]; }
 
-function fieldLabel() {
+function fieldLabel(mode) {
+  const m = mode || state.mode;
+  if (m === "div")
+    return state.v === "tas" ? "模式间分歧 ΔT（max−min，K）" : "模式间分歧 ΔP（max−min，%）";
   if (state.v === "tas")
-    return state.mode === "delta" ? "年均温变化 ΔT（°C）" : "年均温（°C）";
-  return state.mode === "delta" ? "年降水变化 ΔP（%）" : "年降水（mm/年）";
+    return m === "delta" ? "年均温变化 ΔT（°C）" : "年均温（°C）";
+  return m === "delta" ? "年降水变化 ΔP（%）" : "年降水（mm/年）";
 }
-function chartUnit() { return state.v === "tas" ? "°C" : (state.mode === "delta" ? "%" : "mm/年"); }
+function chartUnit() {
+  if (state.mode === "div") return state.v === "tas" ? "K" : "%";
+  return state.v === "tas" ? "°C" : (state.mode === "delta" ? "%" : "mm/年");
+}
 
 /* ================= 山体阴影（一次构建） ================= */
 function buildHill() {
@@ -541,15 +643,20 @@ function drawStar(x, y, r) {
 
 function drawMap() {
   computeView(); computeTF();
-  const key = state.v + "|" + state.s + "|" + state.mode;
-  const idx = YEARS.indexOf(state.year);
-  const u8 = getU8(key, idx);
-  const rng = RG[key];
-  const lut = lutOf();
-
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
   ctx.clearRect(0, 0, CSS_W, CSS_H);
   ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, CSS_W, CSS_H);
+
+  if (isObs(state.year) && !H) {           // 历史帧包尚未就绪
+    ctx.fillStyle = "#5d6a78";
+    ctx.font = "600 15px WorkSans, Microsoft YaHei, sans-serif";
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText("历史观测帧加载中…", CSS_W / 2, CSS_H / 2);
+    return;
+  }
+  const f = frameInfo();
+  const u8 = f.u8, rng = f.rng;
+  const lut = lutOf(f.mode);
 
   // 数据帧（先 4x 平滑放大，弱化 1km 像素感）
   const fc = frameCanvas(u8, lut);
@@ -573,7 +680,22 @@ function drawMap() {
   ctx.globalAlpha = 1;
   ctx.restore();
 
-  // 湖面描边（不填充，避免色场误读）
+  // 湖面填色 = 湖泊水量净收支距平（示意级，固定 ±300 mm/年 标尺）
+  const lk = lakeAnom();
+  if (lk !== null) {
+    const t = Math.max(-1, Math.min(1, lk / 300));
+    const a = 0.30 + 0.50 * Math.abs(t);
+    ctx.fillStyle = t >= 0 ? "rgba(29,78,216," + a + ")" : "rgba(146,64,14," + a + ")";
+    for (const ring of M.lakeRings) {
+      ctx.beginPath();
+      ring.forEach((p, i) => {
+        const q = TF.toPx(p[0], p[1]);
+        i === 0 ? ctx.moveTo(q[0], q[1]) : ctx.lineTo(q[0], q[1]);
+      });
+      ctx.closePath(); ctx.fill();
+    }
+  }
+  // 湖面描边
   ctx.lineWidth = 1.6; ctx.strokeStyle = "#2980b9";
   for (const ring of M.lakeRings) {
     ctx.beginPath();
@@ -626,14 +748,16 @@ function gradientCSS(lut, t0, t1, n) {
   return "linear-gradient(90deg," + stops.join(",") + ")";
 }
 function updateColorbar() {
-  const key = state.v + "|" + state.s + "|" + state.mode;
-  const rng = RG[key];
-  const lut = lutOf();
+  if (isObs(state.year) && !H) return;
+  const f = frameInfo();
+  const rng = f.rng;
+  const lut = lutOf(f.mode);
+  const oneSided = f.mode !== "delta";
   const lo = document.getElementById("cbar-lo"), hi = document.getElementById("cbar-hi");
   const mid = document.getElementById("cbar-mid");
   const barL = document.getElementById("cbar"), barR = document.getElementById("cbar2");
   const fmt = (v) => Math.abs(v) >= 100 ? v.toFixed(0) : v.toFixed(1);
-  if (state.mode === "delta") {
+  if (!oneSided) {
     // 左右两段，中间夹 0 标签
     barL.style.width = "93px"; barL.style.border = "1px solid var(--line)";
     barL.style.background = gradientCSS(lut, 0, 0.5, 6);
@@ -652,10 +776,11 @@ function updateColorbar() {
 
 /* ================= 悬浮提示 ================= */
 const tip = document.getElementById("tip");
-canvas.addEventListener("mousemove", (e) => {
+function showTip(cx, cy, e) {
+  if (isObs(state.year) && !H) { tip.style.display = "none"; return; }
   const r = canvas.getBoundingClientRect();
-  const px = (e.clientX - r.left) * (CSS_W / r.width);
-  const py = (e.clientY - r.top) * (CSS_H / r.height);
+  const px = (cx - r.left) * (CSS_W / r.width);
+  const py = (cy - r.top) * (CSS_H / r.height);
   const [lon, lat] = TF.toLL(px, py);
   if (!inWatershed(lon, lat)) {
     tip.style.display = "none";
@@ -663,101 +788,192 @@ canvas.addEventListener("mousemove", (e) => {
     return;
   }
   canvas.style.cursor = "crosshair";
-  const key = state.v + "|" + state.s + "|" + state.mode;
-  const rng = RG[key];
+  const f = frameInfo();
+  const rng = f.rng;
   const i = Math.round((lon - LON[0]) / STEP), j = Math.round((LAT[0] - lat) / STEP);
   if (i < 0 || i >= NLON || j < 0 || j >= NLAT) { tip.style.display = "none"; return; }
-  const u8 = getU8(key, YEARS.indexOf(state.year));
-  const val = rng.vmin + u8[j * NLON + i] / 255 * (rng.vmax - rng.vmin);
-  const unit = state.v === "tas" ? "°C" : (state.mode === "delta" ? "%" : "mm/年");
-  const pre = state.mode === "delta" ? (val >= 0 ? "+" : "") : "";
-  const name = state.mode === "delta"
-    ? (state.v === "tas" ? "ΔT" : "ΔP") : (state.v === "tas" ? "年均温" : "年降水");
-  tip.innerHTML = lon.toFixed(3) + "°E · " + lat.toFixed(3) + "°N<br>" +
+  const val = rng.vmin + f.u8[j * NLON + i] / 255 * (rng.vmax - rng.vmin);
+  const unit = f.mode === "div" ? (state.v === "tas" ? "K" : "%")
+    : (state.v === "tas" ? "°C" : (f.mode === "delta" ? "%" : "mm/年"));
+  const pre = f.mode === "abs" ? "" : (val >= 0 ? "+" : "");
+  const name = f.mode === "div" ? "模式间分歧"
+    : (f.mode === "delta"
+      ? (state.v === "tas" ? "ΔT" : "ΔP")
+      : (state.v === "tas" ? "年均温" : "年降水"));
+  const src = f.obs ? '<span style="opacity:.7">CHELSA 观测</span> · ' : "";
+  tip.innerHTML = lon.toFixed(3) + "°E · " + lat.toFixed(3) + "°N<br>" + src +
     name + " <b>" + pre + (Math.abs(val) >= 100 ? val.toFixed(0) : val.toFixed(2)) + " " + unit + "</b>";
   tip.style.display = "block";
   const wr = canvas.parentElement.getBoundingClientRect();
-  let tx = e.clientX - wr.left + 14, ty = e.clientY - wr.top - 40;
+  let tx = cx - wr.left + 14, ty = cy - wr.top - 40;
   if (tx + 150 > wr.width) tx -= 165;
   if (ty < 0) ty = 4;
   tip.style.left = tx + "px"; tip.style.top = ty + "px";
+}
+canvas.addEventListener("mousemove", (e) => showTip(e.clientX, e.clientY, e));
+canvas.addEventListener("touchmove", (e) => {
+  if (e.touches.length) { showTip(e.touches[0].clientX, e.touches[0].clientY, e); e.preventDefault(); }
+}, { passive: false });
+canvas.addEventListener("touchstart", (e) => {
+  if (e.touches.length) showTip(e.touches[0].clientX, e.touches[0].clientY, e);
 });
 canvas.addEventListener("mouseleave", () => { tip.style.display = "none"; });
+canvas.addEventListener("touchend", () => { setTimeout(() => { tip.style.display = "none"; }, 1600); });
 
 /* ================= 统计面板 ================= */
 function fmtSigned(v, unit, digits) {
   const d = digits === undefined ? 1 : digits;
   return (v >= 0 ? "+" : "") + (Math.abs(v) >= 100 ? v.toFixed(0) : v.toFixed(d)) + " " + unit;
 }
+function lakeCm() {
+  const a = lakeAnom();
+  return a === null ? null : a * 0.1;      // mm/年 → cm/年（水位当量）
+}
 function updateStats() {
-  const i = YEARS.indexOf(state.year);
+  const obs = isObs(state.year);
   const v = state.v, s = state.s, st = SE[v][s];
   const unit = v === "tas" ? "°C" : "%";
-  const d = st.dmed[i], lo = st.dlo[i], hi = st.dhi[i], a = st.amed[i];
-  const n = M.nmodels[i];
-
-  document.getElementById("st-scen").textContent = SCEN_FULL[s];
-  document.getElementById("st-scen").className = "st-scen " + (s === "ssp245" ? "c245" : "c585");
-  document.getElementById("st-window").innerHTML =
-    "窗口 " + M.winStart[i] + "–" + M.winEnd[i] + "（20 年）" +
-    '<span class="nm-badge' + (n < 2 ? " one" : "") + '">' + (n >= 2 ? n + " 模式集合" : "单模式") + "</span>";
-
   const big = document.getElementById("st-big");
-  big.innerHTML = fmtSigned(d, "", v === "tas" ? 1 : (Math.abs(d) >= 10 ? 0 : 1)) +
-    '<span class="big-unit">' + unit + "</span>";
-  big.style.color = v === "tas" ? (d >= 0 ? "var(--warm)" : "var(--cool)")
-                                 : (d >= 0 ? "var(--wet)" : "var(--dry)");
-  document.getElementById("st-bigcap").textContent =
-    "相对 " + M.histRef + " 观测基准 · " + (v === "tas" ? "流域年均温" : "流域年降水");
+  const rangeEl = document.getElementById("st-range");
 
-  const rUnit = v === "tas" ? "°C" : "%";
-  document.getElementById("st-range").innerHTML =
-    "模式间范围 <b>" + (lo >= 0 ? "+" : "") + lo.toFixed(1) + " ~ " +
-    (hi >= 0 ? "+" : "") + hi.toFixed(1) + " " + rUnit + "</b>" +
-    (n < 2 ? ' <span style="color:#c2410c">（当前仅 1 个模式覆盖）</span>' : "");
+  document.getElementById("st-scen").textContent = obs ? "CHELSA 观测（历史）" : SCEN_FULL[s];
+  document.getElementById("st-scen").className = "st-scen " + (obs ? "c245" : (s === "ssp245" ? "c245" : "c585"));
+  document.getElementById("st-scen").style.color = obs ? "#52525b" : "";
+  if (!obs) document.getElementById("st-scen").style.color = "";
+  document.getElementById("st-window").innerHTML = obs
+    ? "观测单年（年际变率真实呈现）"
+    : "窗口 " + M.winStart[state.year - 2020] + "–" + M.winEnd[state.year - 2020] + "（20 年）" +
+      '<span class="nm-badge' + (M.nmodels[state.year - 2020] < 2 ? " one" : "") + '">' +
+      (M.nmodels[state.year - 2020] >= 2 ? M.nmodels[state.year - 2020] + " 模式集合" : "单模式") + "</span>";
 
-  if (v === "tas") {
-    const h = a - d;
+  if (obs) {
+    const OS = SE.obsStats, i = state.year - Y_START;
+    const a = OS.abs[v][i], base = OS.base[v];
+    const d = v === "tas" ? a - base : (a / base - 1) * 100;
+    const showAbs = state.mode === "abs";
+    const shown = showAbs ? a : d;
+    const shownUnit = showAbs ? (v === "tas" ? "°C" : "mm/年")
+                              : (v === "tas" ? "°C" : "%");
+    big.innerHTML = (showAbs ? "" : (shown >= 0 ? "+" : "")) +
+      (Math.abs(shown) >= 100 ? shown.toFixed(0) : shown.toFixed(1)) +
+      '<span class="big-unit">' + shownUnit + "</span>";
+    big.style.color = v === "tas" ? (shown >= 0 ? "var(--warm)" : "var(--cool)")
+                                  : (shown >= 0 ? "var(--wet)" : "var(--dry)");
+    document.getElementById("st-bigcap").textContent = showAbs
+      ? "观测单年绝对值 · " + (v === "tas" ? "流域年均温" : "流域年降水")
+      : "相对 " + M.histRef + " 观测气候态 · " + (v === "tas" ? "流域年均温" : "流域年降水");
+    rangeEl.innerHTML = '观测单年 <b>' + (v === "tas" ? a.toFixed(1) + " °C" : a.toFixed(0) + " mm") +
+      "</b>（无模式区间）";
     document.getElementById("st-abs").innerHTML =
-      '<span class="lab">流域年均温</span>　<b>' + h.toFixed(1) + " °C</b> → <b>" +
-      a.toFixed(1) + " °C</b>";
-    document.getElementById("st-hist").textContent = "现状为 " + M.histRef + " 30m 细化口径流域均值";
+      '<span class="lab">流域' + (v === "tas" ? "年均温" : "年降水") + "</span>　<b>" +
+      (v === "tas" ? a.toFixed(1) + " °C" : a.toFixed(0) + " mm") + "</b>";
+    document.getElementById("st-hist").textContent = "CHELSA 1 km 流域平均 · 单年值";
+    document.getElementById("cmp-245").textContent = "—";
+    document.getElementById("cmp-585").textContent = "—";
+    document.getElementById("cmp-245").parentElement.classList.add("dim");
+    document.getElementById("cmp-585").parentElement.classList.add("dim");
   } else {
-    const h = a / (1 + d / 100);
-    document.getElementById("st-abs").innerHTML =
-      '<span class="lab">流域年降水</span>　<b>' + h.toFixed(0) + " mm</b> → <b>" +
-      a.toFixed(0) + " mm</b>";
-    document.getElementById("st-hist").textContent = "现状为 " + M.histRef + " 30m 细化口径流域均值";
+    const i = state.year - 2020;
+    const mode = state.mode;
+    const d = mode === "div" ? st.dspan[i] : st.dmed[i];
+    const lo = st.dlo[i], hi = st.dhi[i], a = st.amed[i];
+    const n = M.nmodels[i];
+
+    document.getElementById("st-scen").textContent = SCEN_FULL[s];
+    document.getElementById("st-scen").className = "st-scen " + (s === "ssp245" ? "c245" : "c585");
+
+    big.innerHTML = fmtSigned(d, "", v === "tas" ? 1 : (Math.abs(d) >= 10 ? 0 : 1)) +
+      '<span class="big-unit">' + (mode === "div" ? (v === "tas" ? "K" : "%") : unit) + "</span>";
+    big.style.color = mode === "div" ? "#7c3aed"
+      : (v === "tas" ? (d >= 0 ? "var(--warm)" : "var(--cool)")
+                     : (d >= 0 ? "var(--wet)" : "var(--dry)"));
+    document.getElementById("st-bigcap").textContent = mode === "div"
+      ? "模式间分歧（max−min）· 流域均值"
+      : "相对 " + M.histRef + " 观测基准 · " + (v === "tas" ? "流域年均温" : "流域年降水");
+
+    const rUnit = v === "tas" ? "°C" : "%";
+    rangeEl.innerHTML = mode === "div"
+      ? "模式间流域 Δ 范围 <b>" + (lo >= 0 ? "+" : "") + lo.toFixed(1) + " ~ " +
+        (hi >= 0 ? "+" : "") + hi.toFixed(1) + " " + rUnit + "</b>"
+      : "模式间范围 <b>" + (lo >= 0 ? "+" : "") + lo.toFixed(1) + " ~ " +
+        (hi >= 0 ? "+" : "") + hi.toFixed(1) + " " + rUnit + "</b>" +
+        (n < 2 ? ' <span style="color:#c2410c">（当前仅 1 个模式覆盖）</span>' : "");
+
+    if (v === "tas") {
+      const h = a - st.dmed[i];
+      document.getElementById("st-abs").innerHTML =
+        '<span class="lab">流域年均温</span>　<b>' + h.toFixed(1) + " °C</b> → <b>" +
+        a.toFixed(1) + " °C</b>";
+      document.getElementById("st-hist").textContent = "现状为 " + M.histRef + " 30m 细化口径流域均值";
+    } else {
+      const h = a / (1 + st.dmed[i] / 100);
+      document.getElementById("st-abs").innerHTML =
+        '<span class="lab">流域年降水</span>　<b>' + h.toFixed(0) + " mm</b> → <b>" +
+        a.toFixed(0) + " mm</b>";
+      document.getElementById("st-hist").textContent = "现状为 " + M.histRef + " 30m 细化口径流域均值";
+    }
+    document.getElementById("cmp-245").textContent = fmtSigned(SE[v]["ssp245"].dmed[i], unit, 1);
+    document.getElementById("cmp-585").textContent = fmtSigned(SE[v]["ssp585"].dmed[i], unit, 1);
+    document.getElementById("cmp-245").parentElement.classList.toggle("dim", s !== "ssp245");
+    document.getElementById("cmp-585").parentElement.classList.toggle("dim", s !== "ssp585");
   }
 
-  document.getElementById("cmp-245").textContent = fmtSigned(SE[v]["ssp245"].dmed[i], unit, 1);
-  document.getElementById("cmp-585").textContent = fmtSigned(SE[v]["ssp585"].dmed[i], unit, 1);
-  document.getElementById("cmp-245").parentElement.classList.toggle("dim", s !== "ssp245");
-  document.getElementById("cmp-585").parentElement.classList.toggle("dim", s !== "ssp585");
+  const lk = lakeCm();
+  document.getElementById("lk-val").textContent = lk === null ? "—" :
+    (lk >= 0 ? "+" : "") + lk.toFixed(1) + " cm/年";
+  document.getElementById("lk-val").style.color =
+    lk === null ? "" : (lk >= 0 ? "#1d4ed8" : "#92400e");
 }
 
 /* ================= 标题 / 徽章 ================= */
 function updateTitles() {
-  const i = YEARS.indexOf(state.year);
+  const obs = isObs(state.year);
+  const i = obs ? -1 : state.year - 2020;
+  const effMode = obs && state.mode === "div" ? "delta" : state.mode;
   document.getElementById("map-title").textContent =
-    fieldLabel() + " · " + SCEN_NAME[state.s];
-  document.getElementById("win-badge").textContent =
-    "窗口 " + M.winStart[i] + "–" + M.winEnd[i] + " · " +
-    (M.nmodels[i] >= 2 ? M.nmodels[i] + " 模式" : "单模式");
-  document.getElementById("year-big").textContent = state.year;
-  document.getElementById("win-big").textContent =
-    "窗口 " + M.winStart[i] + "–" + M.winEnd[i];
-  document.getElementById("chart-title").textContent = state.mode === "delta"
-    ? "流域" + (state.v === "tas" ? "年均温" : "年降水") + "变化（相对 " + M.histRef + "）"
-    : "流域" + (state.v === "tas" ? "年均温" : "年降水") + "（绝对值）";
+    fieldLabel(effMode) + " · " + (obs ? "CHELSA 观测" : SCEN_NAME[state.s]) +
+    (obs && state.mode === "div" ? "（历史年无模式分歧，显示变化量）" : "");
+  document.getElementById("win-badge").textContent = obs
+    ? "观测单年 · CHELSA 1 km"
+    : "窗口 " + M.winStart[i] + "–" + M.winEnd[i] + " · " +
+      (effMode === "div" ? "五模式 max−min" : (M.nmodels[i] >= 2 ? M.nmodels[i] + " 模式" : "单模式"));
+  document.getElementById("year-big").textContent =
+    (obs ? "观测 " : "") + state.year;
+  document.getElementById("win-big").textContent = obs
+    ? "历史观测 · 单年值"
+    : "窗口 " + M.winStart[i] + "–" + M.winEnd[i];
+  document.getElementById("chart-title").textContent =
+    state.mode === "div"
+      ? "流域" + (state.v === "tas" ? "年均温" : "年降水") + "模式间分歧与集合变化"
+      : state.mode === "delta"
+        ? "流域" + (state.v === "tas" ? "年均温" : "年降水") + "变化（相对 " + M.histRef + "）"
+        : "流域" + (state.v === "tas" ? "年均温" : "年降水") + "（绝对值）";
 }
 
 /* ================= 图表 ================= */
 const chart = echarts.init(document.getElementById("chart"));
+const OBS_GREY = "#52525b";
 function buildChart() {
-  const v = state.v, mode = state.mode;
+  const v = state.v;
+  const mode = state.mode === "div" ? "delta" : state.mode;   // div 模式图表仍显示集合变化
   const unit = chartUnit();
   const series = [];
+  const OS = SE.obsStats;
+  const obsYears = OS.years;
+
+  // 观测单年线（CHELSA，1981–2019）
+  const obsData = obsYears.map((y, i) => {
+    const a = OS.abs[v][i];
+    const val = mode === "abs" ? a
+      : (v === "tas" ? a - OS.base[v] : (a / OS.base[v] - 1) * 100);
+    return [y, Math.round(val * 100) / 100];
+  });
+  series.push({
+    id: "obs", name: "观测 (CHELSA)", type: "line",
+    data: obsData, symbol: "circle", symbolSize: 3, showSymbol: false,
+    lineStyle: { width: 1.6, color: OBS_GREY, opacity: .9 },
+    itemStyle: { color: OBS_GREY }, emphasis: { focus: "series" }, z: 4
+  });
 
   for (const s of ["ssp245", "ssp585"]) {
     const st = SE[v][s];
@@ -795,6 +1011,25 @@ function buildChart() {
       });
     }
   }
+
+  // 湖泊水量净收支（右轴，示意）
+  const LK = SE.lake;
+  series.push({
+    id: "lake-obs", name: "湖泊净收支（右轴）", type: "line",
+    data: LK.obs.map((val, i) => [obsYears[i], val]),
+    symbol: "none",
+    lineStyle: { width: 1.2, color: OBS_GREY, type: "dashed", opacity: .75 },
+    yAxisIndex: 1, z: 3
+  });
+  for (const s of ["ssp245", "ssp585"]) {
+    series.push({
+      id: "lake-" + s, name: "湖泊净收支（右轴）", type: "line",
+      data: YEARS.map((y, i) => [y, LK[s][i]]),
+      symbol: "none",
+      lineStyle: { width: s === state.s ? 1.8 : 1.2, color: SCEN_COLOR[s], type: "dashed", opacity: .6 },
+      yAxisIndex: 1, z: 3
+    });
+  }
   // 年份游标
   series.push({
     id: "cursor", name: "_cursor", type: "line", data: [], silent: true, z: 10,
@@ -808,9 +1043,9 @@ function buildChart() {
 
   chart.setOption({
     animation: false,
-    grid: { left: 62, right: 24, top: 34, bottom: 42 },
+    grid: { left: 62, right: 58, top: 34, bottom: 42 },
     legend: {
-      data: ["SSP2-4.5", "SSP5-8.5"],
+      data: ["SSP2-4.5", "SSP5-8.5", "观测 (CHELSA)", "湖泊净收支（右轴）"],
       top: 2, left: 62, itemWidth: 22, itemHeight: 3,
       textStyle: { fontSize: 13 }
     },
@@ -821,41 +1056,72 @@ function buildChart() {
       padding: [8, 12],
       formatter: (params) => {
         const y = params.length ? params[0].axisValue : state.year;
-        const i = YEARS.indexOf(y);
         const u = v === "tas" ? "°C" : (mode === "delta" ? "%" : "mm/年");
         const nm = v === "tas" ? "年均温" : "年降水";
-        let h = '<b>' + y + ' 年窗口 ' + M.winStart[i] + "–" + M.winEnd[i] + "</b>" +
-          '　<span style="opacity:.75">' + (M.nmodels[i] >= 2 ? M.nmodels[i] + " 模式" : "单模式") + "</span><br>";
-        h += "流域" + nm + (mode === "delta" ? " 变化" : "") + "：<br>";
-        for (const s of ["ssp245", "ssp585"]) {
-          const st = SE[v][s];
-          if (mode === "delta") {
-            h += '<span style="color:' + SCEN_COLOR[s] + '">■</span> ' + SCEN_NAME[s] +
-              "　<b>" + fmtSigned(st.dmed[i], u, 2) + "</b>" +
-              '<span style="opacity:.7">（' + st.dlo[i].toFixed(1) + " ~ " +
-              (st.dhi[i] >= 0 ? "+" : "") + st.dhi[i].toFixed(1) + u + "）</span><br>";
-          } else {
-            h += '<span style="color:' + SCEN_COLOR[s] + '">■</span> ' + SCEN_NAME[s] +
-              "　<b>" + st.amed[i].toFixed(1) + " " + u + "</b><br>";
+        const lkP = params.find((p) => p.seriesId === "lake-ssp245");
+        const lkP585 = params.find((p) => p.seriesId === "lake-ssp585");
+        const lkObs = params.find((p) => p.seriesId === "lake-obs");
+        const lkFmt = (p) => p === undefined ? "" :
+          (p.value[1] >= 0 ? "+" : "") + p.value[1].toFixed(0);
+        let h;
+        if (y < Y_FUT0) {
+          const i = OS.years.indexOf(y);
+          const a = OS.abs[v][i];
+          const val = mode === "abs" ? a : (v === "tas" ? a - OS.base[v] : (a / OS.base[v] - 1) * 100);
+          h = "<b>" + y + " 年 · CHELSA 观测单年</b><br>" +
+            "流域" + nm + "（" + (mode === "abs" ? "绝对值" : "相对 " + M.histRef + "）") +
+            "：<b>" + (mode === "abs" ? val.toFixed(1) : fmtSigned(val, u, 2)) + (mode === "abs" ? " " + u : "") + "</b>";
+        } else {
+          const i = YEARS.indexOf(y);
+          h = "<b>" + y + " 年窗口 " + M.winStart[i] + "–" + M.winEnd[i] + "</b>" +
+            "　<span style='opacity:.75'>" + (M.nmodels[i] >= 2 ? M.nmodels[i] + " 模式" : "单模式") + "</span><br>" +
+            "流域" + nm + (mode === "delta" ? " 变化" : "") + "：<br>";
+          for (const s of ["ssp245", "ssp585"]) {
+            const st = SE[v][s];
+            if (mode === "delta") {
+              h += "<span style='color:" + SCEN_COLOR[s] + "'>■</span> " + SCEN_NAME[s] +
+                "　<b>" + fmtSigned(st.dmed[i], u, 2) + "</b>" +
+                "<span style='opacity:.7'>（" + st.dlo[i].toFixed(1) + " ~ " +
+                (st.dhi[i] >= 0 ? "+" : "") + st.dhi[i].toFixed(1) + u + "）</span><br>";
+            } else {
+              h += "<span style='color:" + SCEN_COLOR[s] + "'>■</span> " + SCEN_NAME[s] +
+                "　<b>" + st.amed[i].toFixed(1) + " " + u + "</b><br>";
+            }
           }
         }
+        const lkRow = (label, p, col) => p === undefined ? "" :
+          "<span style='color:" + col + "'>▸</span> " + label +
+          "　<b>" + lkFmt(p) + " mm/年</b><br>";
+        h += lkRow("湖泊净收支 " + (y < Y_FUT0 ? "（观测）" : "SSP2-4.5"), y < Y_FUT0 ? lkObs : lkP, y < Y_FUT0 ? OBS_GREY : SCEN_COLOR.ssp245);
+        if (y >= Y_FUT0) h += lkRow("湖泊净收支 SSP5-8.5", lkP585, SCEN_COLOR.ssp585);
+        h += "<span style='opacity:.6;font-size:11px'>湖泊为示意级粗估（右轴）</span>";
         return h;
       }
     },
     xAxis: {
-      type: "value", min: 2020, max: 2090,
-      axisLabel: { fontSize: 12 },
+      type: "value", min: Y_START, max: Y_END,
+      splitNumber: 5,
+      axisLabel: { fontSize: 12, formatter: (val) => String(val).replace(/,/g, "") },
       splitLine: { show: false },
       axisLine: { lineStyle: { color: "#c3ccd6" } }
     },
-    yAxis: {
-      type: "value",
-      name: unit, nameTextStyle: { fontSize: 12, color: "#5d6a78" },
-      axisLabel: { fontSize: 12, formatter: (val) => (val > 0 && mode === "delta" ? "+" : "") + val },
-      splitLine: { lineStyle: { color: "#edf1f5" } },
-      scale: true,
-      min: mode === "delta" ? (val) => Math.min(0, Math.floor(val.min)) : null
-    },
+    yAxis: [
+      {
+        type: "value",
+        name: unit, nameTextStyle: { fontSize: 12, color: "#5d6a78" },
+        axisLabel: { fontSize: 12, formatter: (val) => (val > 0 && mode === "delta" ? "+" : "") + val },
+        splitLine: { lineStyle: { color: "#edf1f5" } },
+        scale: true,
+        min: mode === "delta" ? (val) => Math.min(0, Math.floor(val.min)) : null
+      },
+      {
+        type: "value",
+        name: "mm/年", nameTextStyle: { fontSize: 12, color: "#5d6a78" },
+        axisLabel: { fontSize: 12, formatter: (val) => (val > 0 ? "+" : "") + val },
+        splitLine: { show: false },
+        scale: true
+      }
+    ],
     series: series
   }, true);
 }
@@ -863,13 +1129,13 @@ function buildChart() {
 chart.on("click", (params) => {
   if (params.componentType === "series" && params.data) {
     const yr = Math.round(params.data[0]);
-    if (yr >= 2020 && yr <= 2090) setYear(yr);
+    if (yr >= Y_START && yr <= Y_END) setYear(yr);
   }
 });
 chart.getZr().on("click", (e) => {
   if (e.target) return;   // 命中图形元素（含图例）时不响应
   const yr = Math.round(chart.convertFromPixel({ xAxisIndex: 0 }, e.offsetX));
-  if (yr >= 2020 && yr <= 2090) setYear(yr);
+  if (yr >= Y_START && yr <= Y_END) setYear(yr);
 });
 
 function syncCursor() {
@@ -877,9 +1143,11 @@ function syncCursor() {
   const upd = [
     { id: "cursor", markLine: { data: [{ xAxis: state.year }] } },
     { id: "med-ssp245", lineStyle: { width: s === "ssp245" ? 3 : 2 } },
-    { id: "med-ssp585", lineStyle: { width: s === "ssp585" ? 3 : 2 } }
+    { id: "med-ssp585", lineStyle: { width: s === "ssp585" ? 3 : 2 } },
+    { id: "lake-ssp245", lineStyle: { width: s === "ssp245" ? 1.8 : 1.2 } },
+    { id: "lake-ssp585", lineStyle: { width: s === "ssp585" ? 1.8 : 1.2 } }
   ];
-  if (state.mode === "delta") {
+  if (state.mode !== "abs") {
     upd.push({ id: "solo-ssp245", lineStyle: { width: s === "ssp245" ? 2.5 : 1.6 } });
     upd.push({ id: "solo-ssp585", lineStyle: { width: s === "ssp585" ? 2.5 : 1.6 } });
   }
@@ -896,8 +1164,8 @@ function togglePlay() {
   } else {
     btnPlay.textContent = "⏸"; btnPlay.classList.add("playing");
     timer = setInterval(() => {
-      setYear(state.year >= 2090 ? 2020 : state.year + 1);
-    }, 170);
+      setYear(state.year >= Y_END ? Y_START : state.year + 1);
+    }, 150);
   }
 }
 btnPlay.addEventListener("click", () => { btnPlay.blur(); togglePlay(); });
@@ -905,13 +1173,62 @@ btnPlay.addEventListener("click", () => { btnPlay.blur(); togglePlay(); });
 /* ================= 年份设置 ================= */
 const slider = document.getElementById("slider");
 function setYear(y) {
-  y = Math.max(2020, Math.min(2090, Math.round(y)));
+  y = Math.max(Y_START, Math.min(Y_END, Math.round(y)));
   if (y === state.year) return;
   state.year = y;
   slider.value = y;
-  drawMap(); updateStats(); updateTitles(); syncCursor();
+  drawMap(); updateColorbar(); updateStats(); updateTitles(); syncCursor();
 }
 slider.addEventListener("input", () => setYear(+slider.value));
+
+/* 时间轴刻度（绝对定位，兼容不等距标签；两端标签内收避免溢出） */
+(function buildTicks() {
+  const el = document.getElementById("ticks");
+  const list = [1981, 2000, 2020, 2040, 2060, 2090];
+  list.forEach((y, k) => {
+    const sp = document.createElement("span");
+    sp.textContent = y;
+    const left = (y - Y_START) / (Y_END - Y_START) * 100;
+    sp.style.left = left.toFixed(2) + "%";
+    if (k === 0) sp.style.transform = "none";
+    else if (k === list.length - 1) sp.style.transform = "translateX(-100%)";
+    el.appendChild(sp);
+  });
+})();
+
+/* ================= 导出 PNG ================= */
+document.getElementById("btn-export").addEventListener("click", () => {
+  const W = canvas.width, Hh = canvas.height;
+  const pad = Math.round(24 * DPR);
+  const headH = Math.round(56 * DPR), footH = Math.round(34 * DPR);
+  const c = document.createElement("canvas");
+  c.width = W + pad * 2; c.height = Hh + headH + footH + pad * 2;
+  const x = c.getContext("2d");
+  x.fillStyle = "#ffffff"; x.fillRect(0, 0, c.width, c.height);
+  const obs = isObs(state.year);
+  const i = obs ? -1 : state.year - 2020;
+  const title = fieldLabel(state.mode === "div" && obs ? "delta" : state.mode) + " · " +
+    (obs ? "CHELSA 观测 " + state.year
+         : SCEN_NAME[state.s] + " " + state.year +
+           "（窗口 " + M.winStart[i] + "–" + M.winEnd[i] + "）");
+  x.fillStyle = "#1b2530"; x.textAlign = "center"; x.textBaseline = "middle";
+  x.font = "700 " + Math.round(21 * DPR) + "px WorkSans, 'Microsoft YaHei', sans-serif";
+  x.fillText(title, c.width / 2, pad + headH / 2);
+  x.textAlign = "left";
+  x.drawImage(canvas, pad, pad + headH);
+  x.fillStyle = "#5d6a78"; x.textBaseline = "alphabetic";
+  x.font = Math.round(12.5 * DPR) + "px WorkSans, 'Microsoft YaHei', sans-serif";
+  x.fillText("云龙天池流域气候变化交互探索器 · CMIP6 五模式集合 · 湖泊收支为示意级粗估 · 生成于 2026-09",
+    pad, c.height - pad - Math.round(10 * DPR));
+  c.toBlob((b) => {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(b);
+    a.download = "yunlong_explorer_" + state.v + "_" + state.s + "_" +
+      state.mode + "_" + state.year + ".png";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+  }, "image/png");
+});
 
 document.addEventListener("keydown", (e) => {
   const onSlider = e.target === slider;
@@ -944,6 +1261,7 @@ function refreshAll(rebuildChart) {
 window.addEventListener("resize", () => chart.resize());
 
 /* ================= 启动 ================= */
+ensureHist();          // 惰性加载历史观测帧（1981–2019）
 refreshAll(true);
 })();
 
