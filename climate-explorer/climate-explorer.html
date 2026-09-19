@@ -217,11 +217,11 @@ footer a { color: var(--accent); }
   .stats { padding: 14px 16px; }
   .legend { font-size: 11.5px; gap: 10px; }
 }
-/* ---------- 现状速览（2D 三图） ---------- */
+/* ---------- 现状速览（2D 四图） ---------- */
 .present-card { padding: 16px 18px 18px; margin-bottom: 16px; }
 .present-head { margin-bottom: 12px; }
 .present-sub { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
-.present-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.present-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
 .present-grid figure { margin: 0; }
 .present-grid img {
   width: 100%; display: block; border: 1px solid var(--line);
@@ -348,7 +348,11 @@ footer a { color: var(--accent); }
       </figure>
       <figure>
         <img src="./present/present_temperature.png" alt="温度图">
-        <figcaption>年均温（1981–2010，8.1–11.9 °C）</figcaption>
+        <figcaption>年均温·坡向辐射修正（1981–2010，7.3–12.5 °C）</figcaption>
+      </figure>
+      <figure>
+        <img src="./present/present_pr.png" alt="年降水图">
+        <figcaption>年降水·上风向遮蔽机制（1981–2010，1070–1604 mm/年）</figcaption>
       </figure>
       <figure>
         <img src="./present/present_land.png" alt="植被河流图">
@@ -370,7 +374,7 @@ footer a { color: var(--accent); }
   <h2>数据与口径说明</h2>
   <div class="cols">
     <div>
-      <p><b>观测基准</b>：CHELSA v2.1 月值气候态（1981–2010，1 km），气温经 30m 地形细化（局部高程递减率 γΔz），降水双线性插值。</p>
+      <p><b>观测基准</b>：CHELSA v2.1 月值气候态（1981–2010，1 km），气温经 30m 地形细化（局部高程递减率 γΔz + 坡向辐射修正，阳坡暖/阴坡冷），降水经上风向遮蔽机制细化（迎风坡湿/背风坡干，风场取 1981–2010 ERA5 逐月盛行风）。现状四图即该机制细化口径。</p>
       <p><b>模式集合</b>：CMIP6 Amon 逐月数据，MPI-ESM1-2-HR、MRI-ESM2-0、EC-Earth3、CanESM5 与 NorESM2-LM（r1i1p1f1 成员，全 2015–2100 时段覆盖），重网格至 1 km 后经逐月经验分位映射（EQM）偏差校正，取五模式中位数与模式间范围。</p>
       <p><b>趋势保持口径</b>：未来窗口气候态 = CHELSA 观测气候态 + GCM 窗口变化信号（与结果图册 restore 环节完全一致），避免降尺度模型外推的均值衰减。</p>
     </div>
