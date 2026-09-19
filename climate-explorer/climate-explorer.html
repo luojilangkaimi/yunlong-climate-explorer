@@ -327,7 +327,7 @@ footer a { color: var(--accent); }
       <div class="cmp-row c585"><span class="nm">SSP5-8.5</span><span id="cmp-585">+3.5 °C</span></div>
     </div>
     <div class="st-note" id="st-note">
-      统计为流域 30m 地形细化口径（气温含高程递减率 γΔz 修正，降水双线性）；地图为 1km 集合中位数场，仅显示云龙天池流域范围。箭头键微调年份，空格播放。
+      统计与年降水"绝对值"图层为流域 30m 机制细化口径（气温含高程递减率 γΔz 与坡向辐射修正，降水经上风向遮蔽机制细化，历史与未来共用同一套乘子）；变化量 Δ 与模式间分歧图层为 1km 场——两期相减时遮蔽乘子严格抵消，机制纹理仅体现在绝对值图层。仅显示云龙天池流域范围。箭头键微调年份，空格播放。
     </div>
   </aside>
 </section>
@@ -441,6 +441,27 @@ function ensureHist(cb) {
   document.head.appendChild(s);
 }
 
+/* 年降水绝对值 30m 遮蔽机制帧（data_pr30.js，惰性加载约 11MB） */
+let P = null, P_pending = false;
+function ensurePR30(cb) {
+  if (P) { if (cb) cb(); return; }
+  if (P_pending) {
+    const t = setInterval(() => { if (P) { clearInterval(t); if (cb) cb(); } }, 120);
+    return;
+  }
+  P_pending = true;
+  const s = document.createElement("script");
+  s.src = "./assets/data_pr30.js";
+  s.onload = () => {
+    P = window.EXPLORER_PR30;
+    buildGrid30();
+    if (state.v === "pr" && state.mode === "abs") {
+      drawMap(); updateColorbar(); updateStats(); updateTitles(); buildChart();
+    }
+  };
+  document.head.appendChild(s);
+}
+
 /* base64 → Uint8Array（带缓存） */
 const u8Cache = new Map();
 function b64ToU8(b64) {
@@ -463,20 +484,39 @@ function getHU8(key, idx) {
   u8Cache.set(ck, u8);
   return u8;
 }
+function getP30(key, idx) {
+  const ck = "p30|" + key + "#" + idx;
+  if (u8Cache.has(ck)) return u8Cache.get(ck);
+  const arr = key.indexOf("|ssp") >= 0 ? P.fut.frames[key] : P.obs.frames[key];
+  const u8 = b64ToU8(arr[idx]);
+  u8Cache.set(ck, u8);
+  return u8;
+}
 
-/* 当前帧解析：历史观测 / 未来（含 div 模式回退） */
+/* 当前帧解析：历史观测 / 未来（含 div 模式回退；年降水绝对值 → 30m 机制帧） */
 function frameInfo() {
   const obs = isObs(state.year);
   let mode = state.mode;
   if (obs && mode === "div") mode = "delta";
+  const use30 = state.v === "pr" && mode === "abs" && G30;
   if (obs) {
+    if (use30) {
+      const i = P.obs.years.indexOf(state.year);
+      const key = "pr|abs";
+      return { u8: getP30(key, i), rng: P.obs.ranges[key], mode, i, obs: true, g: G30 };
+    }
     const i = H.years.indexOf(state.year);
     const key = state.v + "|" + mode;
-    return { u8: getHU8(key, i), rng: H.ranges[key], mode, i, obs: true };
+    return { u8: getHU8(key, i), rng: H.ranges[key], mode, i, obs: true, g: G1K };
+  }
+  if (use30) {
+    const i = YEARS.indexOf(state.year);
+    const key = "pr|" + state.s + "|abs";
+    return { u8: getP30(key, i), rng: P.fut.ranges[key], mode, i, obs: false, g: G30 };
   }
   const i = YEARS.indexOf(state.year);
   const key = state.v + "|" + state.s + "|" + mode;
-  return { u8: getU8(key, i), rng: RG[key], mode, i, obs: false };
+  return { u8: getU8(key, i), rng: RG[key], mode, i, obs: false, g: G1K };
 }
 /* 湖泊水量净收支距平（mm/年，示意） */
 function lakeAnom() {
@@ -562,14 +602,40 @@ function buildHill() {
 }
 const hillCanvas = buildHill();
 
-/* 数据帧 → canvas（96×96，中转 4x 平滑放大后再上屏） */
-function frameCanvas(u8, lut) {
-  const c = document.createElement("canvas");
-  c.width = NLON; c.height = NLAT;
+/* 网格抽象：默认 1km；年降水绝对值图层 → 30m 遮蔽机制网格 */
+const G1K = { lon: LON, lat: LAT, nlon: NLON, nlat: NLAT, step: STEP, ext: EXT, hill: hillCanvas };
+let G30 = null;
+function buildGrid30() {
+  if (!P || G30) return;
+  const lon = P.meta.lon, lat = P.meta.lat;
+  const nl = lon.length, nt = lat.length;
+  const step = ((lon[nl - 1] - lon[0]) / (nl - 1) +
+                (lat[0] - lat[nt - 1]) / (nt - 1)) / 2;
+  const ext = {
+    x0: lon[0] - step / 2, x1: lon[nl - 1] + step / 2,
+    y0: lat[0] + step / 2, y1: lat[nt - 1] - step / 2
+  };
+  const c = document.createElement("canvas"); c.width = nl; c.height = nt;
   const x = c.getContext("2d");
-  const img = x.createImageData(NLON, NLAT);
+  const img = x.createImageData(nl, nt);
+  const hs = atob(P.meta.hillshade);
+  for (let p = 0; p < nl * nt; p++) {
+    const v = hs.charCodeAt(p);
+    img.data[p * 4] = v; img.data[p * 4 + 1] = v; img.data[p * 4 + 2] = v;
+    img.data[p * 4 + 3] = 255;
+  }
+  x.putImageData(img, 0, 0);
+  G30 = { lon, lat, nlon: nl, nlat: nt, step, ext, hill: c };
+}
+
+/* 数据帧 → canvas（按当前网格分辨率，中转 4x 平滑放大后再上屏） */
+function frameCanvas(u8, lut, g) {
+  const c = document.createElement("canvas");
+  c.width = g.nlon; c.height = g.nlat;
+  const x = c.getContext("2d");
+  const img = x.createImageData(g.nlon, g.nlat);
   const d = img.data;
-  for (let p = 0; p < NLON * NLAT; p++) {
+  for (let p = 0; p < g.nlon * g.nlat; p++) {
     const q = u8[p] * 3;
     d[p * 4] = lut[q]; d[p * 4 + 1] = lut[q + 1]; d[p * 4 + 2] = lut[q + 2]; d[p * 4 + 3] = 255;
   }
@@ -661,27 +727,36 @@ function drawMap() {
     ctx.fillText("历史观测帧加载中…", CSS_W / 2, CSS_H / 2);
     return;
   }
+  if (state.v === "pr" && state.mode === "abs" && !P) {   // 30m 机制帧包尚未就绪
+    ensurePR30();
+    ctx.fillStyle = "#5d6a78";
+    ctx.font = "600 15px WorkSans, Microsoft YaHei, sans-serif";
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText("30m 机制帧加载中…", CSS_W / 2, CSS_H / 2);
+    return;
+  }
   const f = frameInfo();
   const u8 = f.u8, rng = f.rng;
+  const g = f.g;
   const lut = lutOf(f.mode);
 
-  // 数据帧（先 4x 平滑放大，弱化 1km 像素感）
-  const fc = frameCanvas(u8, lut);
+  // 数据帧（先 4x 平滑放大，弱化格点像素感）
+  const fc = frameCanvas(u8, lut, g);
   const mid = document.createElement("canvas");
-  mid.width = NLON * 4; mid.height = NLAT * 4;
+  mid.width = g.nlon * 4; mid.height = g.nlat * 4;
   const mx = mid.getContext("2d");
   mx.imageSmoothingEnabled = true; mx.imageSmoothingQuality = "high";
   mx.drawImage(fc, 0, 0, mid.width, mid.height);
 
   // 视野对应的源矩形（格点坐标）
-  const sx = (VIEW.x0 - EXT.x0) / STEP, sw = (VIEW.x1 - VIEW.x0) / STEP;
-  const sy = (EXT.y0 - VIEW.y0) / STEP, sh = (VIEW.y0 - VIEW.y1) / STEP;
+  const sx = (VIEW.x0 - g.ext.x0) / g.step, sw = (VIEW.x1 - VIEW.x0) / g.step;
+  const sy = (g.ext.y0 - VIEW.y0) / g.step, sh = (VIEW.y0 - VIEW.y1) / g.step;
   const dw = TF.s * (VIEW.x1 - VIEW.x0), dh = TF.s * (VIEW.y0 - VIEW.y1);
 
   ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
   ctx.save();
   wsClipPath();   // 山体阴影与数据场均裁剪至云龙天池流域多边形
-  ctx.drawImage(hillCanvas, sx, sy, sw, sh, TF.ox, TF.oy, dw, dh);
+  ctx.drawImage(g.hill, sx, sy, sw, sh, TF.ox, TF.oy, dw, dh);
   ctx.globalAlpha = 0.88;
   ctx.drawImage(mid, sx * 4, sy * 4, sw * 4, sh * 4, TF.ox, TF.oy, dw, dh);
   ctx.globalAlpha = 1;
@@ -756,6 +831,7 @@ function gradientCSS(lut, t0, t1, n) {
 }
 function updateColorbar() {
   if (isObs(state.year) && !H) return;
+  if (state.v === "pr" && state.mode === "abs" && !P) return;
   const f = frameInfo();
   const rng = f.rng;
   const lut = lutOf(f.mode);
@@ -785,6 +861,7 @@ function updateColorbar() {
 const tip = document.getElementById("tip");
 function showTip(cx, cy, e) {
   if (isObs(state.year) && !H) { tip.style.display = "none"; return; }
+  if (state.v === "pr" && state.mode === "abs" && !P) { tip.style.display = "none"; return; }
   const r = canvas.getBoundingClientRect();
   const px = (cx - r.left) * (CSS_W / r.width);
   const py = (cy - r.top) * (CSS_H / r.height);
@@ -797,9 +874,10 @@ function showTip(cx, cy, e) {
   canvas.style.cursor = "crosshair";
   const f = frameInfo();
   const rng = f.rng;
-  const i = Math.round((lon - LON[0]) / STEP), j = Math.round((LAT[0] - lat) / STEP);
-  if (i < 0 || i >= NLON || j < 0 || j >= NLAT) { tip.style.display = "none"; return; }
-  const val = rng.vmin + f.u8[j * NLON + i] / 255 * (rng.vmax - rng.vmin);
+  const g = f.g;
+  const i = Math.round((lon - g.lon[0]) / g.step), j = Math.round((g.lat[0] - lat) / g.step);
+  if (i < 0 || i >= g.nlon || j < 0 || j >= g.nlat) { tip.style.display = "none"; return; }
+  const val = rng.vmin + f.u8[j * g.nlon + i] / 255 * (rng.vmax - rng.vmin);
   const unit = f.mode === "div" ? (state.v === "tas" ? "K" : "%")
     : (state.v === "tas" ? "°C" : (f.mode === "delta" ? "%" : "mm/年"));
   const pre = f.mode === "abs" ? "" : (val >= 0 ? "+" : "");
@@ -807,7 +885,9 @@ function showTip(cx, cy, e) {
     : (f.mode === "delta"
       ? (state.v === "tas" ? "ΔT" : "ΔP")
       : (state.v === "tas" ? "年均温" : "年降水"));
-  const src = f.obs ? '<span style="opacity:.7">CHELSA 观测</span> · ' : "";
+  const src = (f.obs ? '<span style="opacity:.7">CHELSA 观测</span> · ' : "") +
+    (state.v === "pr" && state.mode === "abs"
+      ? '<span style="opacity:.7">30m 遮蔽机制细化</span> · ' : "");
   tip.innerHTML = lon.toFixed(3) + "°E · " + lat.toFixed(3) + "°N<br>" + src +
     name + " <b>" + pre + (Math.abs(val) >= 100 ? val.toFixed(0) : val.toFixed(2)) + " " + unit + "</b>";
   tip.style.display = "block";
@@ -855,7 +935,8 @@ function updateStats() {
 
   if (obs) {
     const OS = SE.obsStats, i = state.year - Y_START;
-    const a = OS.abs[v][i], base = OS.base[v];
+    const use30 = v === "pr" && state.mode === "abs" && P;
+    const a = use30 ? P.obs.abs[i] : OS.abs[v][i], base = use30 ? P.obs.base : OS.base[v];
     const d = v === "tas" ? a - base : (a / base - 1) * 100;
     const showAbs = state.mode === "abs";
     const shown = showAbs ? a : d;
@@ -874,7 +955,9 @@ function updateStats() {
     document.getElementById("st-abs").innerHTML =
       '<span class="lab">流域' + (v === "tas" ? "年均温" : "年降水") + "</span>　<b>" +
       (v === "tas" ? a.toFixed(1) + " °C" : a.toFixed(0) + " mm") + "</b>";
-    document.getElementById("st-hist").textContent = "CHELSA 1 km 流域平均 · 单年值";
+    document.getElementById("st-hist").textContent = use30
+      ? "CHELSA 30m 遮蔽机制细化口径 · 单年值"
+      : "CHELSA 1 km 流域平均 · 单年值";
     document.getElementById("cmp-245").textContent = "—";
     document.getElementById("cmp-585").textContent = "—";
     document.getElementById("cmp-245").parentElement.classList.add("dim");
@@ -882,8 +965,9 @@ function updateStats() {
   } else {
     const i = state.year - 2020;
     const mode = state.mode;
+    const use30 = v === "pr" && mode === "abs" && P;
     const d = mode === "div" ? st.dspan[i] : st.dmed[i];
-    const lo = st.dlo[i], hi = st.dhi[i], a = st.amed[i];
+    const lo = st.dlo[i], hi = st.dhi[i], a = use30 ? P.fut.amed[s][i] : st.amed[i];
     const n = M.nmodels[i];
 
     document.getElementById("st-scen").textContent = SCEN_FULL[s];
@@ -913,7 +997,7 @@ function updateStats() {
         a.toFixed(1) + " °C</b>";
       document.getElementById("st-hist").textContent = "现状为 " + M.histRef + " 30m 细化口径流域均值";
     } else {
-      const h = a / (1 + st.dmed[i] / 100);
+      const h = use30 ? P.obs.base : a / (1 + st.dmed[i] / 100);
       document.getElementById("st-abs").innerHTML =
         '<span class="lab">流域年降水</span>　<b>' + h.toFixed(0) + " mm</b> → <b>" +
         a.toFixed(0) + " mm</b>";
@@ -941,9 +1025,11 @@ function updateTitles() {
     fieldLabel(effMode) + " · " + (obs ? "CHELSA 观测" : SCEN_NAME[state.s]) +
     (obs && state.mode === "div" ? "（历史年无模式分歧，显示变化量）" : "");
   document.getElementById("win-badge").textContent = obs
-    ? "观测单年 · CHELSA 1 km"
+    ? (state.v === "pr" && state.mode === "abs"
+        ? "观测单年 · CHELSA 30m 机制细化" : "观测单年 · CHELSA 1 km")
     : "窗口 " + M.winStart[i] + "–" + M.winEnd[i] + " · " +
-      (effMode === "div" ? "五模式 max−min" : (M.nmodels[i] >= 2 ? M.nmodels[i] + " 模式" : "单模式"));
+      (effMode === "div" ? "五模式 max−min" : (M.nmodels[i] >= 2 ? M.nmodels[i] + " 模式" : "单模式")) +
+      (state.v === "pr" && state.mode === "abs" ? " · 30m 机制细化" : "");
   document.getElementById("year-big").textContent =
     (obs ? "观测 " : "") + state.year;
   document.getElementById("win-big").textContent = obs
@@ -969,8 +1055,9 @@ function buildChart() {
   const obsYears = OS.years;
 
   // 观测单年线（CHELSA，1981–2019）
+  const use30 = v === "pr" && mode === "abs" && P;
   const obsData = obsYears.map((y, i) => {
-    const a = OS.abs[v][i];
+    const a = use30 ? P.obs.abs[i] : OS.abs[v][i];
     const val = mode === "abs" ? a
       : (v === "tas" ? a - OS.base[v] : (a / OS.base[v] - 1) * 100);
     return [y, Math.round(val * 100) / 100];
@@ -999,7 +1086,8 @@ function buildChart() {
         areaStyle: { color: col, opacity: 0.14 }, z: 2
       });
     }
-    const getVal = (i) => mode === "delta" ? st.dmed[i] : st.amed[i];
+    const getVal = (i) => mode === "delta" ? st.dmed[i]
+      : (use30 ? P.fut.amed[s][i] : st.amed[i]);
     series.push({
       id: "med-" + s, name: SCEN_NAME[s], type: "line",
       data: YEARS.map((y, i) => M.nmodels[i] >= 2 ? [y, getVal(i)] : [y, NaN]),
