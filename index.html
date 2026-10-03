@@ -1,74 +1,10 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>云龙天池流域气候变化 · 交互系统</title>
-<style>
-  @font-face {
-    font-family: "WorkSans";
-    src: url("./climate-explorer/_shared/fonts/WorkSans-Regular.ttf") format("truetype");
-    font-weight: 400;
-  }
-  @font-face {
-    font-family: "WorkSans";
-    src: url("./climate-explorer/_shared/fonts/WorkSans-Bold.ttf") format("truetype");
-    font-weight: 700;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: "WorkSans", "PingFang SC", "Microsoft YaHei", sans-serif;
-    background: linear-gradient(160deg, #0b1f3a 0%, #14345e 55%, #1d4a7a 100%);
-    color: #eaf1fa;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 32px 20px;
-  }
-  .wrap { max-width: 860px; width: 100%; text-align: center; }
-  .kicker {
-    font-size: 13px; letter-spacing: 3px; text-transform: uppercase;
-    color: #8fc1ff; margin-bottom: 14px; font-weight: 700;
-  }
-  h1 {
-    font-size: 34px; font-weight: 700; line-height: 1.35; margin-bottom: 14px;
-  }
-  .sub { font-size: 15px; color: #b9cce4; line-height: 1.8; margin-bottom: 38px; }
-  .cards { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; }
-  .card {
-    flex: 1 1 300px; max-width: 380px; text-align: left;
-    background: rgba(255, 255, 255, 0.07);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 14px; padding: 24px 26px;
-    transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
-    text-decoration: none; color: inherit; display: block;
-  }
-  .card:hover { transform: translateY(-4px); border-color: #6aa9ff; background: rgba(255,255,255,0.11); }
-  .card h2 { font-size: 19px; font-weight: 700; margin-bottom: 8px; }
-  .card .en { font-size: 12px; color: #8fc1ff; letter-spacing: 1px; margin-bottom: 10px; font-weight: 700; }
-  .card p { font-size: 13.5px; color: #c4d5ea; line-height: 1.7; }
-  .foot { margin-top: 36px; font-size: 12px; color: #7e96b5; line-height: 1.8; }
-</style>
-</head>
-<body>
-<div class="wrap">
-  <div class="kicker">Yunlong Tianchi Watershed · CMIP6</div>
-  <h1>云龙天池流域气候变化 · 交互系统</h1>
-  <div class="sub">基于 CMIP6 五模式集合（MPI-ESM1-2-HR · MRI-ESM2-0 · EC-Earth3 · CanESM5 · NorESM2-LM）、EQM 偏差校正与 30m 地形细化<br>聚焦云南云龙天池流域（约 7 km²，海拔 2557–3223 m）的气候变化预估</div>
-  <div class="cards">
-    <a class="card" href="./climate-explorer/climate-explorer.html">
-      <div class="en">Interactive Explorer</div>
-      <h2>交互探索器</h2>
-      <p>时间滑块地图（2020–2090 逐年演化）、双情景联动曲线、五模式中位数与模式间不确定范围、流域统计面板。</p>
-    </a>
-    <a class="card" href="./climate-atlas/climate-atlas.html">
-      <div class="en">Result Atlas</div>
-      <h2>结果图册</h2>
-      <p>均值、变化、趋势与极端指数共 36 张图件，仅云龙天池流域范围，流域尺度 30m 精细化制图。</p>
-    </a>
-  </div>
-  <div class="foot">数据：CHELSA 气候态（1981–2010）· CMIP6 SSP2-4.5 / SSP5-8.5 · 云龙站 WMO 56742 独立验证（待补充）</div>
-</div>
-</body>
-</html>
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f5f5f7"><meta name="description" content="云龙天池气候变化与中国典型湖泊气候供水研究交互展示。"><title>云龙 · 气候探索</title><link rel="icon" type="image/svg+xml" href="./favicon.svg"><link rel="stylesheet" href="./_shared/site.css"><style>
+.landing{max-width:1120px;margin:0 auto;padding:0 26px}.intro{padding:104px 0 76px;max-width:790px}.kicker{font-size:12px;letter-spacing:.14em;font-weight:600;color:#6e6e73}h1{font-size:clamp(43px,7vw,82px);letter-spacing:-.065em;line-height:1.02;font-weight:680;margin:15px 0 19px}.intro p{font-size:18px;line-height:1.7;color:#68686e;max-width:690px}.study-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:17px}.study-card{position:relative;min-height:285px;background:#fff;border:1px solid #e5e5ea;border-radius:25px;padding:28px 30px;text-decoration:none;color:#1d1d1f;box-shadow:0 10px 30px rgba(30,45,65,.045);transition:transform .18s,box-shadow .18s;overflow:hidden}.study-card:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(30,45,65,.09)}.study-card.primary{grid-row:span 2;min-height:585px;background:#eff5fb}.study-no{font-size:12px;letter-spacing:.11em;color:#777983}.study-card h2{font-size:29px;letter-spacing:-.035em;line-height:1.2;max-width:390px;margin:23px 0 10px}.study-card p{font-size:14px;color:#68686e;max-width:420px;line-height:1.7}.arrow{position:absolute;right:25px;bottom:20px;color:#1266cc;font-size:22px}.stat-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}.stat-pills span{font-size:11px;border:1px solid #d9e1e8;background:rgba(255,255,255,.72);border-radius:99px;padding:5px 10px;color:#506070}.lake-art{position:absolute;width:84%;height:260px;left:7%;bottom:55px}.study-card:not(.primary) h2{font-size:22px;margin-top:32px}.footer{padding:60px 0 34px;font-size:12px;color:#8b8b90}@media(max-width:700px){.landing{padding:0 17px}.intro{padding:65px 0 42px}.intro p{font-size:16px}.study-grid{grid-template-columns:1fr}.study-card.primary{grid-row:auto;min-height:470px}.study-card:not(.primary){min-height:215px}.lake-art{bottom:48px;height:205px}}
+</style></head><body>
+<nav class="global-nav" aria-label="主导航"><a class="brand" href="./index.html">云龙 · 气候探索</a><div class="nav-links"><a href="./climate-explorer/climate-explorer.html">云龙天池</a><a href="./climate-atlas/climate-atlas.html">结果图册</a><a href="./lake-explorer/index.html">六湖比较</a></div><a class="nav-home" href="./index.html">首页</a></nav>
+<main class="landing"><section class="intro"><div class="kicker">CLIMATE CHANGE · LAKE SYSTEMS · CMIP6</div><h1>气候信号，<br>如何抵达湖泊。</h1><p>从云南云龙天池的精细尺度气候变化，到中国六个典型湖泊的气候供水差异。交互图表呈现模式共识、分歧与边界。</p></section>
+<section class="study-grid" aria-label="研究交互入口"><a class="study-card primary" href="./lake-explorer/index.html"><div class="study-no">研究 02 · 六湖比较</div><h2>六个湖泊，<br>一个可比较的框架。</h2><p>探索气候变化、陆地来水和汇水几何如何共同塑造未来供水，并比较五个模式的分歧。</p><div class="stat-pills"><span>6 个湖泊</span><span>5 个气候模式</span><span>2 种情景</span><span>4 种方法</span></div><svg class="lake-art" viewBox="0 0 680 270" fill="none" aria-hidden="true"><path d="M31 213C102 162 146 223 211 173S328 201 390 130s133-31 166-93 78-3 96-23" stroke="#9cb6cc" stroke-width="2" stroke-dasharray="5 7"/><path d="M76 227c26-26 30-73 76-82s68 37 106 26 48-65 91-68 60 39 96 13 39-78 89-77 47 30 89 11" stroke="#2477bc" stroke-width="4" stroke-linecap="round"/><path d="M175 144c-17-18-45-12-48 8-3 18 22 31 48 51 25-20 48-33 44-51-4-20-30-26-44-8Z" fill="#78b4da"/><circle cx="80" cy="223" r="7" fill="#146ac2"/><circle cx="282" cy="169" r="7" fill="#146ac2"/><circle cx="350" cy="103" r="7" fill="#146ac2"/><circle cx="465" cy="115" r="7" fill="#146ac2"/><circle cx="591" cy="44" r="7" fill="#146ac2"/><circle cx="652" cy="14" r="7" fill="#146ac2"/><text x="77" y="250" font-size="11" fill="#67798b">云龙天池</text><text x="544" y="87" font-size="11" fill="#67798b">气候供水</text></svg><span class="arrow">↗</span></a>
+<a class="study-card" href="./climate-explorer/climate-explorer.html"><div class="study-no">研究 01 · 云龙天池</div><h2>高山流域，逐年变化。</h2><p>在地图、年份与排放情景之间交互浏览 30m 地形细化预估。</p><span class="arrow">↗</span></a>
+<a class="study-card" href="./climate-atlas/climate-atlas.html"><div class="study-no">研究 01 · 结果图册</div><h2>36 幅图，放大细看。</h2><p>按情景、时间、变量和图件类型筛选结果。</p><span class="arrow">↗</span></a></section>
+<footer class="footer">本网站展示模型研究结果。六湖气候供水指标属于筛查级估算，不等同于未来湖面水位预测。</footer></main></body></html>
