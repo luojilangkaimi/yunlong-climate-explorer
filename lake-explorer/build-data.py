@@ -102,6 +102,8 @@ def main() -> None:
             "basin_km2": conf["area_basin_km2"],
             "land_lake_ratio": conf["ac_al_land"],
             "boundary_basis": "公开面积主口径；河流域线供空间定位参考",
+            "elev_m": conf.get("elev_m"),
+            "elev_src": conf.get("elev_src"),
         })
         basin_dir = OUT / "basins"
         for suffix in ("basin", "lake"):
@@ -128,6 +130,7 @@ def main() -> None:
             "units": "mm·a⁻¹",
             "source": "代码/output/lake_v2/{lake_model_results,lake_summary,validation_results}.csv",
             "note": "筛查级气候供水指标；不是水位或湖泊蓄量预测。观测响应检验当前仅适用于青海湖案例，且年际供水序列采用固定气候态蒸发和产流。",
+            "elevation_note": "湖面海拔为公开资料常用整数值（逐湖来源见 lakes[].elev_src），随水位年际波动，仅用于定位图着色与数量级示意。",
         },
         "lakes": lakes,
         "models": models,
