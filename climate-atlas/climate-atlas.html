@@ -332,9 +332,10 @@ sup a:hover { text-decoration: underline; }
 </style>
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <link rel="stylesheet" href="../_shared/site.css">
+<link rel="stylesheet" href="../_shared/ux.css">
 </head>
 <body>
-<nav class="global-nav" aria-label="主导航"><a class="brand" href="../index.html">云龙 · 气候探索</a><div class="nav-links"><a href="../climate-explorer/climate-explorer.html">云龙天池</a><a href="./climate-atlas.html">结果图册</a><a href="../lake-explorer/index.html">六湖比较</a></div><a class="nav-home" href="../index.html">首页</a></nav>
+<nav class="global-nav" aria-label="主导航"><a class="brand" href="../index.html">云龙 · 气候探索</a><div class="nav-links"><a href="../climate-explorer/climate-explorer.html">逐年探索</a><a aria-current="page" href="./climate-atlas.html">结果图册</a><a href="../lake-explorer/index.html">六湖比较</a></div></nav>
 
 <header class="hero">
   <div class="wrap">
@@ -348,110 +349,19 @@ sup a:hover { text-decoration: underline; }
       <span class="chip">1 km 降尺度 + 流域 30m 地形细化</span>
       <span class="chip">基准期 1981–2010（CHELSA）</span>
     </div>
-    <a class="explore-link" href="../climate-explorer/climate-explorer.html">▶ 打开交互探索器：2020–2090 时间滑块 · 双情景联动对比</a>
+    <a class="atlas-start" href="#filters">开始筛选 36 张结果图 <span aria-hidden="true">↓</span></a>
+    <a class="explore-link" href="../climate-explorer/climate-explorer.html">查看云龙天池逐年变化</a>
   </div>
 </header>
 
 <div class="wrap">
 
-<!-- ============ 核心结论 ============ -->
-<section id="summary">
-  <h2 class="sec-title">核心结论速览</h2>
-  <p class="sec-lede">以下数字均为<strong>云龙天池流域（30m 地形细化）五模式集合中位数</strong>口径，相对 1981–2010 观测基准期（CHELSA）的变化量。</p>
-
-  <div class="stat-grid">
-    <div class="stat warm">
-      <div class="num">+4.75<small> K</small></div>
-      <div class="lab">SSP585 末期（2081–2100）流域升温<br>模式间：+4.03 ~ +6.13 K</div>
-    </div>
-    <div class="stat warm">
-      <div class="num">+2.69<small> K</small></div>
-      <div class="lab">SSP245 末期流域升温<br>中排放路径下仍持续变暖</div>
-    </div>
-    <div class="stat">
-      <div class="num">+15.6<small> %</small></div>
-      <div class="lab">SSP585 末期流域降水总量变化<br>模式间 −6.0% ~ +28.2%，信号分歧大</div>
-    </div>
-    <div class="stat">
-      <div class="num">100<small> %</small></div>
-      <div class="lab">SSP585 两窗口 MK 显著增温格点<br>（流域内逐格点检验，α = 0.05）</div>
-    </div>
-  </div>
-
-  <div class="valid-note">
-    <strong>模型可信度：</strong>独立验证期（2011–2014）LSTM 降尺度气温 RMSE 0.85–1.13 K（R ≥ 0.98），降水 RMSE 37.9–39.6 mm/月（R ≈ 0.90），全面优于双线性插值、分位映射（QM）、随机森林与 XGBoost 四类基线方法。
-  </div>
-
-  <div class="chart-row">
-    <figure class="chart-figure">
-      <figcaption>气温变化：集合中位数（K）</figcaption>
-      <div class="chart-sub">未来窗口相对 1981–2010 基准期的流域年均温变化 · 五模式集合中位数</div>
-      <div id="chart-tas"></div>
-    </figure>
-    <figure class="chart-figure">
-      <figcaption>降水变化：集合中位数（%）</figcaption>
-      <div class="chart-sub">未来窗口相对基准期的流域降水总量变化 · 五模式集合中位数（蓝=增湿，棕=变干）</div>
-      <div id="chart-pr"></div>
-    </figure>
-  </div>
-</section>
-
-<!-- ============ 阅读指引 ============ -->
-<section id="guide">
-  <h2 class="sec-title">阅读指引</h2>
-  <div class="guide-grid">
-    <div class="guide-card">
-      <h4>图册组织与命名规则</h4>
-      <p>全部图件由<strong>变量 × 情景 × 窗口 × 指标类型</strong>四个维度组织，命名规则为 <code>变量_情景_窗口_类型_ws.png</code>，例如 <code>tas_ssp585_2081-2100_change_ws.png</code> 表示"气温 · SSP585 · 2081–2100 窗口 · 流域 30m 空间变化图"。上方工具栏可按四个维度筛选浏览；点击任意图可放大查看，支持左右键翻页。图册含现状—未来绝对场对比图（mean）；逐年演化曲线请使用<strong>交互探索器</strong>的时间序列功能。</p>
-    </div>
-    <div class="guide-card">
-      <h4>六类图的定义</h4>
-      <ul>
-        <li><strong>绝对场对比（mean）</strong>：现状 1981–2010 与未来窗口的绝对值双联图（气温 °C / 降水 mm·年⁻¹），共享色标，山体阴影提供地形语境。</li>
-        <li><strong>空间变化（change）</strong>：格点级变化量填色图（气温 K / 降水 %），取集合中位数。</li>
-        <li><strong>MK 趋势（trend）</strong>：窗口内 Sen 斜率填色，灰色区域标注 p ≥ 0.05 的不显著格点。</li>
-        <li><strong>极端暖/冷月（txx / tnn）</strong>：最暖月 / 最冷月相对基准期同期距平（K）。</li>
-        <li><strong>强降水占比（r95p）</strong>：超过基准期同月 95 分位的降水占年总量比例的变化（百分点）。</li>
-      </ul>
-    </div>
-    <div class="guide-card">
-      <h4>统计口径说明</h4>
-      <ul>
-        <li>所有"变化"均相对 <strong>1981–2010 基准期</strong>（CHELSA 观测口径）计算。</li>
-        <li>空间图的数值取<strong>五模式集合中位数</strong>；不确定性请结合时间序列图的模式间范围阅读。</li>
-        <li>极端指标为 ETCCDI 标准指数在<strong>月值数据上的近似实现</strong>（TXx/TNn/R95p 口径），报告引用时建议标注。</li>
-        <li><strong>R95p 读图警示</strong>：未来期降尺度数据的年际变差显著小于历史观测（如 1 月年际标准差约 3 mm 对历史 27 mm），未来几乎没有月份超过基准期同月 95 分位，因此各窗口 R95p 变化普遍呈 −10 ~ −15 个百分点的均匀负值。这是<strong>数据口径限制而非真实的强降水减少</strong>，引用时应注明，不宜据此得出"强降水结构转变"的物理解释。</li>
-      </ul>
-    </div>
-    <div class="guide-card">
-      <h4>流域边界标识</h4>
-      <p>全部图件（含山体阴影底图与数据场）均<strong>裁剪至云龙天池流域多边形内</strong>，流域外不显示任何内容；黑色边界线即流域范围，白色五角星 = 天池湖心。流域由 30m Copernicus DEM 经 D8 汇流分析自动划定：<strong>面积 6.98 km²（8111 个 30m 格点，格点面积已按纬度做经度收缩校正），高程 2557–3223 m</strong>；湖盆以地形洼地自动识别，其填充体积 9.69 Mm³、面积 1.32 km²、湖面高程 2565 m，与文献值（1089.7 万 m³ / 1.28 km² / 2558 m）相符。划定方法详见下方检查图。</p>
-    </div>
-    <div class="guide-card">
-      <h4>流域 30m 地形细化是怎么做的</h4>
-      <p>1km LSTM 降尺度结果在流域内仅覆盖约 7 个格点，不足以刻画 6.98 km² 的小流域。因此将气候场细化到 GLO-30 原生 30m 网格（计算网格为流域外扩约 1.3 km 的范围，图件仅显示流域边界内）：<strong>气温</strong>采用局部高程递减率法——在 1km 网格上逐月回归气温—高程关系得递减率 γ（约 −0.4 ~ −0.6 K/100m），按 30m 与 1km DEM 的高程差 Δz 修正（T₃₀ = T₁ₖ + γΔz）；<strong>降水</strong>采用双线性插值。信息增量体现在<strong>绝对场</strong>（mean 图）紧贴山脊—山谷的地形结构上；ΔT/ΔP 等变化场中 γΔz 项在历史/未来间相互抵消，空间形态与 1km 版一致，数值口径无差别。</p>
-    </div>
-    <div class="guide-card">
-      <h4>结果是怎么算出来的</h4>
-      <p>ESGF 原生 CMIP6 月值数据（约 1° 分辨率）→ 重网格到研究区 → <strong>EQM 非参数经验分位映射偏差校正</strong>（以 CHELSA 1981–2010 逐格点逐月分布为参考）→ 输入 3×3 邻域粗场 + 地形因子（DEM、坡度、坡向）+ 月相的 <strong>LSTM 降尺度模型</strong>，拟合目标为 CHELSA 1km 场 → 对 SSP 情景预测并施加<strong>趋势保持信号恢复</strong>（确保升温/降水信号与 GCM 一致、不被回归均值衰减）→ 五模式集成。</p>
-    </div>
-  </div>
-
-    <figure class="fig-card wide" style="margin-top: 18px;">
-    <div class="fig-media"><img src="assets/figures/watershed_check.png" alt="云龙天池流域划定检查图" loading="lazy"></div>
-    <figcaption class="fig-cap">
-      <div class="fig-head"><span class="fig-no">附图</span><span class="fig-type">流域划定</span></div>
-      <h4>云龙天池流域划定检查图（30m DEM · D8 汇流分析）</h4>
-      <p>灰度山体阴影底图上，红色边界为自动划定的云龙天池流域（6.98 km²），蓝色为天池湖面，▲ 为流域出口（湖水外泄方向），★ 为湖心。流域范围即图册所有图件的显示与统计范围（全部图件均裁剪至该边界内）。</p>
-    </figcaption>
-  </figure>
-</section>
-
 <!-- ============ 图册 ============ -->
 <section id="gallery">
   <h2 class="sec-title">结果图册（36 图）</h2>
+  <p class="atlas-steps"><strong>浏览顺序：</strong>依次选择变量、情景、时间窗和图件类型；点击图件可放大，放大后可用左右键翻页。</p>
 
-  <div class="toolbar">
+  <div class="toolbar" id="filters">
     <div class="wrap toolbar-inner">
       <div class="fgroup" data-dim="var">
         <span class="flab">变量</span>
@@ -852,6 +762,105 @@ sup a:hover { text-decoration: underline; }
   </div>
 
 </section>
+
+<details class="atlas-background">
+  <summary>研究结论与阅读说明（可展开）</summary>
+  <div class="atlas-background-content">
+<!-- ============ 核心结论 ============ -->
+<section id="summary">
+  <h2 class="sec-title">核心结论速览</h2>
+  <p class="sec-lede">以下数字均为<strong>云龙天池流域（30m 地形细化）五模式集合中位数</strong>口径，相对 1981–2010 观测基准期（CHELSA）的变化量。</p>
+
+  <div class="stat-grid">
+    <div class="stat warm">
+      <div class="num">+4.75<small> K</small></div>
+      <div class="lab">SSP585 末期（2081–2100）流域升温<br>模式间：+4.03 ~ +6.13 K</div>
+    </div>
+    <div class="stat warm">
+      <div class="num">+2.69<small> K</small></div>
+      <div class="lab">SSP245 末期流域升温<br>中排放路径下仍持续变暖</div>
+    </div>
+    <div class="stat">
+      <div class="num">+15.6<small> %</small></div>
+      <div class="lab">SSP585 末期流域降水总量变化<br>模式间 −6.0% ~ +28.2%，信号分歧大</div>
+    </div>
+    <div class="stat">
+      <div class="num">100<small> %</small></div>
+      <div class="lab">SSP585 两窗口 MK 显著增温格点<br>（流域内逐格点检验，α = 0.05）</div>
+    </div>
+  </div>
+
+  <div class="valid-note">
+    <strong>模型可信度：</strong>独立验证期（2011–2014）LSTM 降尺度气温 RMSE 0.85–1.13 K（R ≥ 0.98），降水 RMSE 37.9–39.6 mm/月（R ≈ 0.90），全面优于双线性插值、分位映射（QM）、随机森林与 XGBoost 四类基线方法。
+  </div>
+
+  <div class="chart-row">
+    <figure class="chart-figure">
+      <figcaption>气温变化：集合中位数（K）</figcaption>
+      <div class="chart-sub">未来窗口相对 1981–2010 基准期的流域年均温变化 · 五模式集合中位数</div>
+      <div id="chart-tas"></div>
+    </figure>
+    <figure class="chart-figure">
+      <figcaption>降水变化：集合中位数（%）</figcaption>
+      <div class="chart-sub">未来窗口相对基准期的流域降水总量变化 · 五模式集合中位数（蓝=增湿，棕=变干）</div>
+      <div id="chart-pr"></div>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ 阅读指引 ============ -->
+<section id="guide">
+  <h2 class="sec-title">阅读指引</h2>
+  <div class="guide-grid">
+    <div class="guide-card">
+      <h4>图册组织与命名规则</h4>
+      <p>全部图件由<strong>变量 × 情景 × 窗口 × 指标类型</strong>四个维度组织，命名规则为 <code>变量_情景_窗口_类型_ws.png</code>，例如 <code>tas_ssp585_2081-2100_change_ws.png</code> 表示"气温 · SSP585 · 2081–2100 窗口 · 流域 30m 空间变化图"。上方工具栏可按四个维度筛选浏览；点击任意图可放大查看，支持左右键翻页。图册含现状—未来绝对场对比图（mean）；逐年演化曲线请使用<strong>交互探索器</strong>的时间序列功能。</p>
+    </div>
+    <div class="guide-card">
+      <h4>六类图的定义</h4>
+      <ul>
+        <li><strong>绝对场对比（mean）</strong>：现状 1981–2010 与未来窗口的绝对值双联图（气温 °C / 降水 mm·年⁻¹），共享色标，山体阴影提供地形语境。</li>
+        <li><strong>空间变化（change）</strong>：格点级变化量填色图（气温 K / 降水 %），取集合中位数。</li>
+        <li><strong>MK 趋势（trend）</strong>：窗口内 Sen 斜率填色，灰色区域标注 p ≥ 0.05 的不显著格点。</li>
+        <li><strong>极端暖/冷月（txx / tnn）</strong>：最暖月 / 最冷月相对基准期同期距平（K）。</li>
+        <li><strong>强降水占比（r95p）</strong>：超过基准期同月 95 分位的降水占年总量比例的变化（百分点）。</li>
+      </ul>
+    </div>
+    <div class="guide-card">
+      <h4>统计口径说明</h4>
+      <ul>
+        <li>所有"变化"均相对 <strong>1981–2010 基准期</strong>（CHELSA 观测口径）计算。</li>
+        <li>空间图的数值取<strong>五模式集合中位数</strong>；不确定性请结合时间序列图的模式间范围阅读。</li>
+        <li>极端指标为 ETCCDI 标准指数在<strong>月值数据上的近似实现</strong>（TXx/TNn/R95p 口径），报告引用时建议标注。</li>
+        <li><strong>R95p 读图警示</strong>：未来期降尺度数据的年际变差显著小于历史观测（如 1 月年际标准差约 3 mm 对历史 27 mm），未来几乎没有月份超过基准期同月 95 分位，因此各窗口 R95p 变化普遍呈 −10 ~ −15 个百分点的均匀负值。这是<strong>数据口径限制而非真实的强降水减少</strong>，引用时应注明，不宜据此得出"强降水结构转变"的物理解释。</li>
+      </ul>
+    </div>
+    <div class="guide-card">
+      <h4>流域边界标识</h4>
+      <p>全部图件（含山体阴影底图与数据场）均<strong>裁剪至云龙天池流域多边形内</strong>，流域外不显示任何内容；黑色边界线即流域范围，白色五角星 = 天池湖心。流域由 30m Copernicus DEM 经 D8 汇流分析自动划定：<strong>面积 6.98 km²（8111 个 30m 格点，格点面积已按纬度做经度收缩校正），高程 2557–3223 m</strong>；湖盆以地形洼地自动识别，其填充体积 9.69 Mm³、面积 1.32 km²、湖面高程 2565 m，与文献值（1089.7 万 m³ / 1.28 km² / 2558 m）相符。划定方法详见下方检查图。</p>
+    </div>
+    <div class="guide-card">
+      <h4>流域 30m 地形细化是怎么做的</h4>
+      <p>1km LSTM 降尺度结果在流域内仅覆盖约 7 个格点，不足以刻画 6.98 km² 的小流域。因此将气候场细化到 GLO-30 原生 30m 网格（计算网格为流域外扩约 1.3 km 的范围，图件仅显示流域边界内）：<strong>气温</strong>采用局部高程递减率法——在 1km 网格上逐月回归气温—高程关系得递减率 γ（约 −0.4 ~ −0.6 K/100m），按 30m 与 1km DEM 的高程差 Δz 修正（T₃₀ = T₁ₖ + γΔz）；<strong>降水</strong>采用双线性插值。信息增量体现在<strong>绝对场</strong>（mean 图）紧贴山脊—山谷的地形结构上；ΔT/ΔP 等变化场中 γΔz 项在历史/未来间相互抵消，空间形态与 1km 版一致，数值口径无差别。</p>
+    </div>
+    <div class="guide-card">
+      <h4>结果是怎么算出来的</h4>
+      <p>ESGF 原生 CMIP6 月值数据（约 1° 分辨率）→ 重网格到研究区 → <strong>EQM 非参数经验分位映射偏差校正</strong>（以 CHELSA 1981–2010 逐格点逐月分布为参考）→ 输入 3×3 邻域粗场 + 地形因子（DEM、坡度、坡向）+ 月相的 <strong>LSTM 降尺度模型</strong>，拟合目标为 CHELSA 1km 场 → 对 SSP 情景预测并施加<strong>趋势保持信号恢复</strong>（确保升温/降水信号与 GCM 一致、不被回归均值衰减）→ 五模式集成。</p>
+    </div>
+  </div>
+
+    <figure class="fig-card wide" style="margin-top: 18px;">
+    <div class="fig-media"><img src="assets/figures/watershed_check.png" alt="云龙天池流域划定检查图" loading="lazy"></div>
+    <figcaption class="fig-cap">
+      <div class="fig-head"><span class="fig-no">附图</span><span class="fig-type">流域划定</span></div>
+      <h4>云龙天池流域划定检查图（30m DEM · D8 汇流分析）</h4>
+      <p>灰度山体阴影底图上，红色边界为自动划定的云龙天池流域（6.98 km²），蓝色为天池湖面，▲ 为流域出口（湖水外泄方向），★ 为湖心。流域范围即图册所有图件的显示与统计范围（全部图件均裁剪至该边界内）。</p>
+    </figcaption>
+  </figure>
+</section>
+
+  </div>
+</details>
 </div>
 
 <!-- ============ Lightbox ============ -->

@@ -235,9 +235,10 @@ footer a { color: var(--accent); }
 </style>
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <link rel="stylesheet" href="../_shared/site.css">
+<link rel="stylesheet" href="../_shared/ux.css">
 </head>
-<body>
-<nav class="global-nav" aria-label="主导航"><a class="brand" href="../index.html">云龙 · 气候探索</a><div class="nav-links"><a href="./climate-explorer.html">云龙天池</a><a href="../climate-atlas/climate-atlas.html">结果图册</a><a href="../lake-explorer/index.html">六湖比较</a></div><a class="nav-home" href="../index.html">首页</a></nav>
+<body class="climate-explorer">
+<nav class="global-nav" aria-label="主导航"><a class="brand" href="../index.html">云龙 · 气候探索</a><div class="nav-links"><a aria-current="page" href="./climate-explorer.html">逐年探索</a><a href="../climate-atlas/climate-atlas.html">结果图册</a><a href="../lake-explorer/index.html">六湖比较</a></div></nav>
 <div class="wrap">
 
 <header>
@@ -245,8 +246,10 @@ footer a { color: var(--accent); }
     <h1>云龙天池流域气候变化 <span class="accent">交互探索器</span></h1>
     <p class="sub">CHELSA 观测 1981–2019 · CMIP6 五模式集合预估至 2090 · 湖泊收支示意 · 可导出 PNG</p>
   </div>
-  <a class="atlas-link" href="../climate-atlas/climate-atlas.html">← 返回结果图册</a>
+  <a class="atlas-link" href="../climate-atlas/climate-atlas.html">查看配套结果图册</a>
 </header>
+
+<div class="explorer-instructions" aria-label="浏览步骤"><b>怎么用</b><span>选择气候变量</span><span>切换情景与地图图层</span><span>拖动年份或点击播放</span><span>在地图上悬停查看数值</span></div>
 
 <section class="controls card">
   <div class="ctrl-group"><label>变量</label>
